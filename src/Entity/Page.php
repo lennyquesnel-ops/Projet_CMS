@@ -22,7 +22,7 @@ class Page
     /**
      * @var Collection<int, elementMenu>
      */
-    #[ORM\OneToMany(targetEntity: elementMenu::class, mappedBy: 'page')]
+    #[ORM\OneToMany(targetEntity: ElementMenu::class, mappedBy: 'page')]
     private Collection $elementMenu;
 
     /**

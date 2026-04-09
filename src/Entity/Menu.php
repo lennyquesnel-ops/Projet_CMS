@@ -24,7 +24,7 @@ class Menu
     /**
      * @var Collection<int, elementMenu>
      */
-    #[ORM\OneToMany(targetEntity: elementMenu::class, mappedBy: 'menu')]
+    #[ORM\OneToMany(targetEntity: ElementMenu::class, mappedBy: 'menu')]
     private Collection $elementMenu;
 
     public function __construct()

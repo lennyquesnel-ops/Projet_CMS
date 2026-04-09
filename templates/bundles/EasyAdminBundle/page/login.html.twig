@@ -1,0 +1,21 @@
+{% extends '@!EasyAdmin/page/login.html.twig' %}
+
+{% block head_stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
+
+{% block body_class 'login-page-atais' %}
+
+{% block wrapper_wrapper %}
+    <div class="atais-login-page">
+        <div class="atais-login-card">
+            <div class="atais-login-header">
+                <h1>Ataïs Informatique</h1>
+                <p>Connexion à l'administration</p>
+            </div>
+
+            {{ parent() }}
+        </div>
+    </div>
+{% endblock %}

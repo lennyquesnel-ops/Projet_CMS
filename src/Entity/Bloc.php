@@ -34,7 +34,7 @@ class Bloc
     /**
      * @var Collection<int, media>
      */
-    #[ORM\ManyToMany(targetEntity: media::class, inversedBy: 'blocs')]
+    #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'blocs')]
     private Collection $medias;
 
     #[ORM\ManyToOne(inversedBy: 'bloc')]

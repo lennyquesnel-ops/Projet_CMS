@@ -1,0 +1,149 @@
+:root {
+    --vert-atais: #add300;
+    --vert-atais-dark: #95b800;
+    --gris-atais: #5b605f;
+    --gris-atais-dark: #464a49;
+    --gris-atais-light: #f3f5f4;
+    --gris-bordure: #d9dddd;
+    --blanc: #ffffff;
+    --texte: #2f3332;
+    --texte-clair: #6c7270;
+    --ombre-atais: 0 10px 25px rgba(91, 96, 95, 0.12);
+    --radius-atais: 16px;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    color: var(--texte);
+}
+
+/* ===== LOGIN ===== */
+
+body.login-page-atais {
+    background: linear-gradient(135deg, #f7f7f7 0%, #eceeed 100%);
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+body.login-page-atais .wrapper {
+    background: transparent !important;
+}
+
+.atais-login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.atais-login-card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--blanc);
+    border-radius: var(--radius-atais);
+    box-shadow: var(--ombre-atais);
+    overflow: hidden;
+    border-top: 6px solid var(--vert-atais);
+    padding-bottom: 25px;
+}
+
+.atais-login-header {
+    background: var(--gris-atais);
+    color: var(--blanc);
+    padding: 2rem;
+    text-align: center;
+}
+
+.atais-login-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--blanc);
+}
+
+.atais-login-header p {
+    margin: 0.5rem 0 0 0;
+    color: #dfe3e2;
+}
+
+.menu-item.active a,.menu-item.active .menu-icon {
+   color: var(--vert-atais) !important;
+}
+
+.menu-item:hover a, .menu-item:hover .menu-icon {
+    color: var(--vert-atais) !important;
+}
+
+.menu-item.active {
+    background: var(--gris-atais) !important;
+    border-radius: 8px;
+}
+
+.sidebar {
+    width: 100%;
+    max-width: 520px;
+    background: var(--blanc);
+    border-radius: var(--radius-atais);
+    box-shadow: var(--ombre-atais);
+    overflow: hidden;
+    border-top: 6px solid var(--vert-atais);
+    padding-bottom: 25px;
+}
+
+@media (max-width: 991.98px) {
+    .sidebar {
+        max-width: none;
+        width: auto;
+        background: var(--blanc);
+        border-radius: 0;
+        box-shadow: none;
+        border-top: none;
+        padding-bottom: 0;
+        overflow: visible;
+    }
+
+    .main-header {
+        padding: initial !important;
+        margin: initial !important;
+    }
+
+    .logo {
+        width: auto;
+        margin: 0;
+        background: initial;
+        padding: initial;
+        text-align: initial;
+    }
+}
+
+
+
+.action-new{
+    background: var(--vert-atais) !important;
+    border-color: var(--vert-atais) !important;
+    color: var(--gris-atais) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-new:hover {
+    background: var(--vert-atais-dark) !important;
+    border-color: var(--vert-atais-dark) !important;
+    color: var(--gris-atais) !important;
+    transform: scale(1.05);
+}
+
+/* ===== DARK MODE ===== */
+
+[data-bs-theme="dark"] {
+    --gris-atais-light: #1f2221;
+    --gris-bordure: #3a3f3e;
+    --blanc: #181a19;
+    --texte: #f3f5f4;
+    --texte-clair: #b8bebc;
+    --ombre-atais: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
