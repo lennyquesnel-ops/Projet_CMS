@@ -28,7 +28,7 @@ class Page
     /**
      * @var Collection<int, bloc>
      */
-    #[ORM\OneToMany(targetEntity: bloc::class, mappedBy: 'page')]
+    #[ORM\OneToMany(targetEntity: Bloc::class, mappedBy: 'page')]
     private Collection $bloc;
 
     public function __construct()
@@ -114,4 +114,8 @@ class Page
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->slug ?? 'Nouvelle page';
+    }
 }

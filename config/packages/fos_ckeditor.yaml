@@ -1,5 +1,25 @@
-# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
-
 twig:
     form_themes:
         - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
+fos_ck_editor:
+    base_path: "ckeditor"
+    js_path: "ckeditor/ckeditor.js"
+    default_config: bloc_config
+
+    configs:
+        bloc_config:
+            language: fr
+            height: 500
+            clipboard_handleImages: false
+            format_tags: "p;h1;h2;h3"
+            toolbar:
+                - [ 'Format', '-', 'Bold', 'Italic', 'Underline', '-', 'RemoveFormat' ]
+                - [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent' ]
+                - [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ]
+                - [ 'Link', 'Unlink', 'Image', 'Table', 'HorizontalRule' ]
+                - [ 'Undo', 'Redo', '-', 'Source', 'Maximize' ]
+            allowedContent: true
+            extraAllowedContent: 'img[*]{*}(*);div(*){*}[*];span(*){*}[*]'
+            filebrowserUploadRoute: admin_bloc_upload_image
+            filebrowserUploadMethod: form

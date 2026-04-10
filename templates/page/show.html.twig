@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page.slug }}{% endblock %}
+
+{% block body %}
+    <div class="page-contenu">
+        {% for bloc in page.bloc %}
+            {% if bloc.estVisible %}
+                <div class="bloc-contenu">
+                    {{ bloc.contenu|raw }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

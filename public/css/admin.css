@@ -147,3 +147,22 @@ body.login-page-atais .wrapper {
     --texte-clair: #b8bebc;
     --ombre-atais: 0 10px 25px rgba(0, 0, 0, 0.35);
 }
+
+.bloc-contenu h1 {
+    font-family: "Playfair Display", serif;
+    font-size: 2.4rem;
+    margin-bottom: 1rem;
+}
+
+.bloc-contenu p {
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.bloc-contenu img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1rem 0;
+}
