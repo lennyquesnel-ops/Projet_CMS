@@ -21,10 +21,14 @@ class Menu
     #[ORM\Column]
     private ?int $ordre = null;
 
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $est_visible = true;
+
     /**
-     * @var Collection<int, elementMenu>
+     * @var Collection<int, ElementMenu>
      */
     #[ORM\OneToMany(targetEntity: ElementMenu::class, mappedBy: 'menu')]
+    #[ORM\OrderBy(['ordre' => 'ASC'])]
     private Collection $elementMenu;
 
     public function __construct()
@@ -61,15 +65,27 @@ class Menu
         return $this;
     }
 
+    public function isEstVisible(): ?bool
+    {
+        return $this->est_visible;
+    }
+
+    public function setEstVisible(bool $est_visible): static
+    {
+        $this->est_visible = $est_visible;
+
+        return $this;
+    }
+
     /**
-     * @return Collection<int, elementMenu>
+     * @return Collection<int, ElementMenu>
      */
     public function getElementMenu(): Collection
     {
         return $this->elementMenu;
     }
 
-    public function addElementMenu(elementMenu $elementMenu): static
+    public function addElementMenu(ElementMenu $elementMenu): static
     {
         if (!$this->elementMenu->contains($elementMenu)) {
             $this->elementMenu->add($elementMenu);
@@ -79,15 +95,19 @@ class Menu
         return $this;
     }
 
-    public function removeElementMenu(elementMenu $elementMenu): static
+    public function removeElementMenu(ElementMenu $elementMenu): static
     {
         if ($this->elementMenu->removeElement($elementMenu)) {
-            // set the owning side to null (unless already changed)
             if ($elementMenu->getMenu() === $this) {
                 $elementMenu->setMenu(null);
             }
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->libelle ?? 'Nouveau menu';
     }
 }

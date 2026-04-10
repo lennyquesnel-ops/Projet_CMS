@@ -10,8 +10,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class PageController extends AbstractController
 {
     #[Route('/page/{slug}', name: 'app_page_show')]
-    public function show(string $slug, PageRepository $pageRepository): Response
-    {
+    public function show(
+        string $slug,
+        PageRepository $pageRepository
+    ): Response {
         $page = $pageRepository->findOneBy(['slug' => $slug]);
 
         if (!$page) {

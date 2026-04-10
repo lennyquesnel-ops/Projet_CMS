@@ -123,14 +123,14 @@ body.login-page-atais .wrapper {
 
 
 
-.action-new{
+.action-new, .action-saveAndReturn, .action-saveAndAddAnother{
     background: var(--vert-atais) !important;
     border-color: var(--vert-atais) !important;
     color: var(--gris-atais) !important;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.action-new:hover {
+.action-new:hover,  .action-saveAndReturn:hover, .action-saveAndAddAnother:hover {
     background: var(--vert-atais-dark) !important;
     border-color: var(--vert-atais-dark) !important;
     color: var(--gris-atais) !important;

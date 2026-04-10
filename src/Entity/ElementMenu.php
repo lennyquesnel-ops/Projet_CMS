@@ -19,13 +19,14 @@ class ElementMenu
     #[ORM\Column]
     private ?int $ordre = null;
 
-    #[ORM\Column]
-    private ?bool $est_visible = null;
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $est_visible = true;
 
     #[ORM\OneToOne(mappedBy: 'elementMenu', cascade: ['persist', 'remove'])]
     private ?Bloc $bloc = null;
 
     #[ORM\ManyToOne(inversedBy: 'elementMenu')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Menu $menu = null;
 
     #[ORM\ManyToOne(inversedBy: 'elementMenu')]
@@ -79,12 +80,10 @@ class ElementMenu
 
     public function setBloc(?Bloc $bloc): static
     {
-        // unset the owning side of the relation if necessary
         if ($bloc === null && $this->bloc !== null) {
             $this->bloc->setElementMenu(null);
         }
 
-        // set the owning side of the relation if necessary
         if ($bloc !== null && $bloc->getElementMenu() !== $this) {
             $bloc->setElementMenu($this);
         }
@@ -116,5 +115,10 @@ class ElementMenu
         $this->page = $page;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->libelle ?? 'Nouvel élément de menu';
     }
 }

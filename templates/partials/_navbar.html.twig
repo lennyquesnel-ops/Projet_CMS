@@ -1,0 +1,48 @@
+<nav class="site-navbar">
+    <div class="site-navbar__inner">
+        <a href="#" class="site-navbar__brand">ATAIS Informatique</a>
+
+        <ul class="site-navbar__menu">
+            {% set currentRoute = app.request.attributes.get('_route') %}
+            {% set currentSlug = app.request.attributes.get('slug') %}
+
+            {% for menu in menus %}
+                {% set elementsVisibles = menu.elementMenu|filter(element => element.estVisible) %}
+                {% set menuActif = false %}
+
+                {% for element in elementsVisibles %}
+                    {% if element.page and currentRoute == 'app_page_show' and element.page.slug == currentSlug %}
+                        {% set menuActif = true %}
+                    {% endif %}
+                {% endfor %}
+
+                <li class="site-navbar__item {{ elementsVisibles|length > 0 ? 'has-dropdown' : '' }} {{ menuActif ? 'is-active' : '' }}">
+                    <span class="site-navbar__link">
+                        {{ menu.libelle }}
+                    </span>
+
+                    {% if elementsVisibles|length > 0 %}
+                        <ul class="site-navbar__dropdown">
+                            {% for element in elementsVisibles %}
+                                {% set elementActif = element.page and currentRoute == 'app_page_show' and element.page.slug == currentSlug %}
+
+                                <li class="site-navbar__dropdown-item">
+                                    {% if element.page %}
+                                        <a href="{{ path('app_page_show', { slug: element.page.slug }) }}"
+                                           class="site-navbar__dropdown-link {{ elementActif ? 'is-active' : '' }}">
+                                            {{ element.libelle }}
+                                        </a>
+                                    {% else %}
+                                        <span class="site-navbar__dropdown-link is-disabled">
+                                            {{ element.libelle }}
+                                        </span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</nav>
