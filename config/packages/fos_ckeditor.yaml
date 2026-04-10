@@ -19,7 +19,11 @@ fos_ck_editor:
                 - [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ]
                 - [ 'Link', 'Unlink', 'Image', 'Table', 'HorizontalRule' ]
                 - [ 'Undo', 'Redo', '-', 'Source', 'Maximize' ]
+
             allowedContent: true
             extraAllowedContent: 'img[*]{*}(*);div(*){*}[*];span(*){*}[*]'
+
             filebrowserUploadRoute: admin_bloc_upload_image
+            filebrowserImageUploadRoute: admin_bloc_upload_image
+            filebrowserImageBrowseRoute: admin_media_browser
             filebrowserUploadMethod: form

@@ -148,4 +148,13 @@ class Bloc
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            'Bloc #%s - %s',
+            $this->id ?? '?',
+            $this->type ?? 'sans type'
+        );
+    }
 }

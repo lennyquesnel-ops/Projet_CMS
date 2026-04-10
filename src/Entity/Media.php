@@ -32,7 +32,6 @@ class Media
         $this->blocs = new ArrayCollection();
     }
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -70,7 +69,7 @@ class Media
         return $this->blocs;
     }
 
-    public function addBloc(Bloc $bloc): static
+    public function addBloc(Media|Bloc $bloc): static
     {
         if (!$this->blocs->contains($bloc)) {
             $this->blocs->add($bloc);
@@ -87,5 +86,10 @@ class Media
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->libelle_media ?? 'Nouveau média';
     }
 }

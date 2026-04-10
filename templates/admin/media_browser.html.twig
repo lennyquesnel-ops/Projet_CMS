@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Médiathèque</title>
+    <link rel="stylesheet" href="{{ asset('css/media-browser.css') }}">
+</head>
+<body>
+    <h1>Choisir une image</h1>
+
+    <div class="media-grid">
+        {% for media in medias %}
+            <div class="media-card">
+                <img src="{{ asset('uploads/blocs/' ~ media.chemin) }}" alt="{{ media.libelleMedia }}">
+
+                <div class="media-card__body">
+                    <div class="media-card__title">{{ media.libelleMedia }}</div>
+
+                    <button
+                        type="button"
+                        class="media-card__button"
+                        onclick="selectMedia('{{ asset('uploads/blocs/' ~ media.chemin) }}', '{{ media.libelleMedia|e('js') }}')"
+                    >
+                        Utiliser cette image
+                    </button>
+                </div>
+            </div>
+        {% else %}
+            <p>Aucun média disponible.</p>
+        {% endfor %}
+    </div>
+
+    <script>
+        function selectMedia(fileUrl, altText) {
+            const params = new URLSearchParams(window.location.search);
+            const funcNum = params.get('CKEditorFuncNum');
+
+            if (window.opener && window.opener.CKEDITOR && funcNum) {
+                window.opener.CKEDITOR.tools.callFunction(funcNum, fileUrl);
+
+                try {
+                    const dialog = window.opener.CKEDITOR.dialog.getCurrent();
+                    if (dialog) {
+                        const altField = dialog.getContentElement('info', 'txtAlt');
+                        if (altField && !altField.getValue()) {
+                            altField.setValue(altText);
+                        }
+                    }
+                } catch (e) {
+                }
+
+                window.close();
+            }
+        }
+    </script>
+</body>
+</html>

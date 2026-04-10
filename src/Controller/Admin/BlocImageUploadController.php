@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Media;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,8 +14,11 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class BlocImageUploadController extends AbstractController
 {
     #[Route('/admin/bloc/upload-image', name: 'admin_bloc_upload_image', methods: ['POST'])]
-    public function upload(Request $request, SluggerInterface $slugger): JsonResponse
-    {
+    public function upload(
+        Request $request,
+        SluggerInterface $slugger,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
         $file = $request->files->get('upload');
 
         if (!$file) {
@@ -24,8 +29,8 @@ class BlocImageUploadController extends AbstractController
         }
 
         $extension = $file->guessExtension() ?: 'bin';
-        $safeFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = $slugger->slug($safeFilename);
+        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = (string) $slugger->slug($originalFilename);
         $newFilename = $safeFilename . '-' . uniqid() . '.' . $extension;
 
         $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/blocs';
@@ -35,10 +40,22 @@ class BlocImageUploadController extends AbstractController
 
         $file->move($uploadDir, $newFilename);
 
+        $media = new Media();
+        $media->setLibelleMedia($originalFilename);
+        $media->setChemin($newFilename);
+
+        $entityManager->persist($media);
+        $entityManager->flush();
+
+        $url = $request->getSchemeAndHttpHost()
+            . $request->getBasePath()
+            . '/uploads/blocs/'
+            . $newFilename;
+
         return new JsonResponse([
             'uploaded' => 1,
             'fileName' => $newFilename,
-            'url' => '/uploads/blocs/' . $newFilename,
+            'url' => $url,
         ]);
     }
 }
