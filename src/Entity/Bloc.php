@@ -16,6 +16,9 @@ class Bloc
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $libelle = null;
+
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
@@ -31,9 +34,6 @@ class Bloc
     #[ORM\OneToOne(inversedBy: 'bloc', cascade: ['persist', 'remove'])]
     private ?ElementMenu $elementMenu = null;
 
-    /**
-     * @var Collection<int, media>
-     */
     #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'blocs')]
     private Collection $medias;
 
@@ -50,6 +50,17 @@ class Bloc
         return $this->id;
     }
 
+    public function getLibelle(): ?string
+    {
+        return $this->libelle;
+    }
+
+    public function setLibelle(?string $libelle): static
+    {
+        $this->libelle = $libelle;
+
+        return $this;
+    }
 
     public function getType(): ?string
     {
@@ -99,8 +110,6 @@ class Bloc
         return $this;
     }
 
-  
-
     public function getElementMenu(): ?ElementMenu
     {
         return $this->elementMenu;
@@ -113,15 +122,12 @@ class Bloc
         return $this;
     }
 
-    /**
-     * @return Collection<int, media>
-     */
     public function getMedias(): Collection
     {
         return $this->medias;
     }
 
-    public function addMedia(media $media): static
+    public function addMedia(Media $media): static
     {
         if (!$this->medias->contains($media)) {
             $this->medias->add($media);
@@ -130,7 +136,7 @@ class Bloc
         return $this;
     }
 
-    public function removeMedia(media $media): static
+    public function removeMedia(Media $media): static
     {
         $this->medias->removeElement($media);
 
@@ -151,10 +157,7 @@ class Bloc
 
     public function __toString(): string
     {
-        return sprintf(
-            'Bloc #%s - %s',
-            $this->id ?? '?',
-            $this->type ?? 'sans type'
-        );
+        return $this->libelle
+            ?: sprintf('Bloc #%s - %s', $this->id ?? '?', $this->type ?? 'sans type');
     }
 }

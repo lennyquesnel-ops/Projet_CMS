@@ -11,7 +11,12 @@
                 {% set menuActif = false %}
 
                 {% for element in elementsVisibles %}
-                    {% if element.page and currentRoute == 'app_page_show' and element.page.slug == currentSlug %}
+                    {% set targetPage = element.page %}
+                    {% if not targetPage and element.bloc and element.bloc.page %}
+                        {% set targetPage = element.bloc.page %}
+                    {% endif %}
+
+                    {% if targetPage and currentRoute == 'app_page_show' and targetPage.slug == currentSlug %}
                         {% set menuActif = true %}
                     {% endif %}
                 {% endfor %}
@@ -24,11 +29,26 @@
                     {% if elementsVisibles|length > 0 %}
                         <ul class="site-navbar__dropdown">
                             {% for element in elementsVisibles %}
-                                {% set elementActif = element.page and currentRoute == 'app_page_show' and element.page.slug == currentSlug %}
+                                {% set targetPage = element.page %}
+                                {% if not targetPage and element.bloc and element.bloc.page %}
+                                    {% set targetPage = element.bloc.page %}
+                                {% endif %}
+
+                                {% set targetAnchor = element.bloc ? 'bloc-' ~ element.bloc.id : null %}
+
+                                {% set targetHref = null %}
+                                {% if targetPage %}
+                                    {% set targetHref = path('app_page_show', { slug: targetPage.slug }) %}
+                                    {% if targetAnchor %}
+                                        {% set targetHref = targetHref ~ '#' ~ targetAnchor %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {% set elementActif = targetPage and currentRoute == 'app_page_show' and targetPage.slug == currentSlug %}
 
                                 <li class="site-navbar__dropdown-item">
-                                    {% if element.page %}
-                                        <a href="{{ path('app_page_show', { slug: element.page.slug }) }}"
+                                    {% if targetHref %}
+                                        <a href="{{ targetHref }}"
                                            class="site-navbar__dropdown-link {{ elementActif ? 'is-active' : '' }}">
                                             {{ element.libelle }}
                                         </a>

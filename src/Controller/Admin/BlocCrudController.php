@@ -14,6 +14,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+
 
 class BlocCrudController extends AbstractCrudController
 {
@@ -26,6 +28,8 @@ class BlocCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
+
+            TextField::new('libelle', 'Libellé'),
 
             ChoiceField::new('type')
                 ->setChoices([

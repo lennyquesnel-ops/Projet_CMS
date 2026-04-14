@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ElementMenu;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,17 @@ class ElementMenuRepository extends ServiceEntityRepository
         parent::__construct($registry, ElementMenu::class);
     }
 
-    //    /**
-    //     * @return ElementMenu[] Returns an array of ElementMenu objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ElementMenu
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function addAdminIndexJoins(QueryBuilder $qb): QueryBuilder
+    {
+        return $qb
+            ->leftJoin('entity.menu', 'm')
+            ->addSelect('m')
+            ->leftJoin('entity.page', 'p')
+            ->addSelect('p')
+            ->leftJoin('entity.bloc', 'b')
+            ->addSelect('b')
+            ->leftJoin('b.page', 'bp')
+            ->addSelect('bp')
+            ->distinct();
+    }
 }

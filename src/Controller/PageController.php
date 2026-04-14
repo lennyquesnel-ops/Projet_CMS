@@ -14,7 +14,7 @@ class PageController extends AbstractController
         string $slug,
         PageRepository $pageRepository
     ): Response {
-        $page = $pageRepository->findOneBy(['slug' => $slug]);
+        $page = $pageRepository->findOneBySlugWithBlocs($slug);
 
         if (!$page) {
             throw $this->createNotFoundException('Page introuvable');

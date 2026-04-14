@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ElementMenuRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: ElementMenuRepository::class)]
 class ElementMenu
@@ -31,6 +33,20 @@ class ElementMenu
 
     #[ORM\ManyToOne(inversedBy: 'elementMenu')]
     private ?Page $page = null;
+
+    #[Assert\Callback]
+    public function validateBlocEtPage(ExecutionContextInterface $context): void
+    {
+        if ($this->bloc === null || $this->page === null) {
+            return;
+        }
+
+        if ($this->bloc->getPage() !== $this->page) {
+            $context->buildViolation('Le bloc sélectionné doit appartenir à la page choisie.')
+                ->atPath('bloc')
+                ->addViolation();
+        }
+    }
 
     public function getId(): ?int
     {
@@ -80,15 +96,24 @@ class ElementMenu
 
     public function setBloc(?Bloc $bloc): static
     {
-        if ($bloc === null && $this->bloc !== null) {
-            $this->bloc->setElementMenu(null);
+        if ($this->bloc === $bloc) {
+            return $this;
         }
+
+        if ($this->bloc !== null) {
+            $oldBloc = $this->bloc;
+            $this->bloc = null;
+
+            if ($oldBloc->getElementMenu() === $this) {
+                $oldBloc->setElementMenu(null);
+            }
+        }
+
+        $this->bloc = $bloc;
 
         if ($bloc !== null && $bloc->getElementMenu() !== $this) {
             $bloc->setElementMenu($this);
         }
-
-        $this->bloc = $bloc;
 
         return $this;
     }

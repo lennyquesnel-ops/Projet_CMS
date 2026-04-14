@@ -21,7 +21,7 @@
         {% endif %}
     </head>
     <body>
-        {% include 'partials/_navbar.html.twig' with { menus: menus } %}
+        {% include 'partials/_navbar.html.twig' with { menus: get_menus() } %}
 
         <main class="site-main">
             {% block body %}{% endblock %}

@@ -4,22 +4,24 @@ namespace App\Twig;
 
 use App\Repository\MenuRepository;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\GlobalsInterface;
+use Twig\TwigFunction;
 
-class MenuExtension extends AbstractExtension implements GlobalsInterface
+class MenuExtension extends AbstractExtension
 {
     public function __construct(
         private readonly MenuRepository $menuRepository
     ) {
     }
 
-    public function getGlobals(): array
+    public function getFunctions(): array
     {
         return [
-            'menus' => $this->menuRepository->findBy(
-                ['est_visible' => true],
-                ['ordre' => 'ASC']
-            ),
+            new TwigFunction('get_menus', [$this, 'getMenus']),
         ];
+    }
+
+    public function getMenus(): array
+    {
+        return $this->menuRepository->findVisibleWithElementsPagesAndBlocs();
     }
 }

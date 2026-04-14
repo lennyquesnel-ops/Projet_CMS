@@ -6,7 +6,7 @@
     <div class="page-contenu">
         {% for bloc in page.bloc %}
             {% if bloc.estVisible %}
-                <section class="bloc-contenu">
+                <section id="bloc-{{ bloc.id }}" class="bloc-contenu">
                     {{ bloc.contenu|raw }}
                 </section>
             {% endif %}

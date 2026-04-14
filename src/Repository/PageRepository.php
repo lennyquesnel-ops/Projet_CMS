@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Page;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,25 @@ class PageRepository extends ServiceEntityRepository
         parent::__construct($registry, Page::class);
     }
 
-    //    /**
-    //     * @return Page[] Returns an array of Page objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function addAdminIndexJoins(QueryBuilder $qb): QueryBuilder
+    {
+        return $qb
+            ->leftJoin('entity.bloc', 'b')->addSelect('b')
+            ->leftJoin('entity.elementMenu', 'em')->addSelect('em')
+            ->leftJoin('em.menu', 'm')->addSelect('m')
+            ->leftJoin('em.bloc', 'emb')->addSelect('emb')
+            ->distinct();
+    }
 
-    //    public function findOneBySomeField($value): ?Page
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findOneBySlugWithBlocs(string $slug): ?Page
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.bloc', 'b')
+            ->addSelect('b')
+            ->andWhere('p.slug = :slug')
+            ->setParameter('slug', $slug)
+            ->orderBy('b.ordre', 'ASC')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

@@ -11,7 +11,7 @@
     <div class="media-grid">
         {% for media in medias %}
             <div class="media-card">
-                <img src="{{ asset('uploads/blocs/' ~ media.chemin) }}" alt="{{ media.libelleMedia }}">
+                <img src="{{ asset(media_base_path ~ '/' ~ media.chemin) }}" alt="{{ media.libelleMedia }}">
 
                 <div class="media-card__body">
                     <div class="media-card__title">{{ media.libelleMedia }}</div>
@@ -19,7 +19,7 @@
                     <button
                         type="button"
                         class="media-card__button"
-                        onclick="selectMedia('{{ asset('uploads/blocs/' ~ media.chemin) }}', '{{ media.libelleMedia|e('js') }}')"
+                        onclick="selectMedia('{{ asset(media_base_path ~ '/' ~ media.chemin) }}', '{{ media.libelleMedia|e('js') }}')"
                     >
                         Utiliser cette image
                     </button>

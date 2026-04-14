@@ -2,8 +2,9 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Bloc;
 use App\Entity\Media;
+use App\Service\UploadManager;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -15,6 +16,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class MediaCrudController extends AbstractCrudController
 {
+    public function __construct(
+        private readonly UploadManager $uploadManager,
+        private readonly string $blocsUploadDir,
+        private readonly string $blocsUploadPath,
+    ) {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Media::class;
@@ -36,8 +44,8 @@ class MediaCrudController extends AbstractCrudController
             TextField::new('libelle_media', 'Libellé'),
 
             ImageField::new('chemin', 'Image')
-                ->setBasePath('uploads/blocs')
-                ->setUploadDir('public/uploads/blocs')
+                ->setBasePath($this->blocsUploadPath)
+                ->setUploadDir(str_replace(\dirname(__DIR__, 3).'/', '', $this->blocsUploadDir))
                 ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]')
                 ->setRequired($pageName === Crud::PAGE_NEW),
 
@@ -45,16 +53,26 @@ class MediaCrudController extends AbstractCrudController
                 ->autocomplete()
                 ->hideOnIndex()
                 ->setFormTypeOption('by_reference', false),
-                    ];
+        ];
     }
 
     public function configureActions(Actions $actions): Actions
     {
-        return $actions
-            ->update(
-                Crud::PAGE_INDEX,
-                Action::NEW,
-                fn (Action $action) => $action->setLabel('Ajouter un média')
-            );
+        return $actions->update(
+            Crud::PAGE_INDEX,
+            Action::NEW,
+            fn (Action $action) => $action->setLabel('Ajouter un média')
+        );
+    }
+
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Media) {
+            return;
+        }
+
+        $this->uploadManager->deleteBlocImage($entityInstance->getChemin());
+
+        parent::deleteEntity($entityManager, $entityInstance);
     }
 }

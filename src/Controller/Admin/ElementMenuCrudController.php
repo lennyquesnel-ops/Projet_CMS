@@ -3,10 +3,16 @@
 namespace App\Controller\Admin;
 
 use App\Entity\ElementMenu;
+use App\Repository\ElementMenuRepository;
+use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -15,6 +21,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ElementMenuCrudController extends AbstractCrudController
 {
+    public function __construct(
+        private readonly ElementMenuRepository $elementMenuRepository
+    ) {
+    }
+
     public static function getEntityFqcn(): string
     {
         return ElementMenu::class;
@@ -45,12 +56,20 @@ class ElementMenuCrudController extends AbstractCrudController
             AssociationField::new('page', 'Page liée')
                 ->setFormTypeOption('choice_label', 'slug'),
 
-            // On cache le bloc ici pour ne pas polluer le CRUD menu
-            AssociationField::new('bloc', 'Bloc')
-                ->hideOnForm()
-                ->hideOnIndex()
-                ->hideOnDetail(),
+            AssociationField::new('bloc', 'Bloc d’ancrage'),
+
         ];
+    }
+
+    public function createIndexQueryBuilder(
+        SearchDto $searchDto,
+        EntityDto $entityDto,
+        FieldCollection $fields,
+        FilterCollection $filters
+    ): QueryBuilder {
+        $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+
+        return $this->elementMenuRepository->addAdminIndexJoins($qb);
     }
 
     public function configureActions(Actions $actions): Actions

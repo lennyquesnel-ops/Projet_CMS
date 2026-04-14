@@ -5,10 +5,11 @@ namespace App\Entity;
 use App\Repository\PageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
+#[UniqueEntity(fields: ['slug'], message: 'Ce slug existe déjà.')]
 class Page
 {
     #[ORM\Id]
@@ -16,19 +17,15 @@ class Page
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
-    /**
-     * @var Collection<int, elementMenu>
-     */
     #[ORM\OneToMany(targetEntity: ElementMenu::class, mappedBy: 'page')]
+    #[ORM\OrderBy(['ordre' => 'ASC'])]
     private Collection $elementMenu;
 
-    /**
-     * @var Collection<int, bloc>
-     */
     #[ORM\OneToMany(targetEntity: Bloc::class, mappedBy: 'page')]
+    #[ORM\OrderBy(['ordre' => 'ASC'])]
     private Collection $bloc;
 
     public function __construct()
@@ -53,16 +50,13 @@ class Page
 
         return $this;
     }
-    
-    /**
-     * @return Collection<int, elementMenu>
-     */
+
     public function getElementMenu(): Collection
     {
         return $this->elementMenu;
     }
 
-    public function addElementMenu(elementMenu $elementMenu): static
+    public function addElementMenu(ElementMenu $elementMenu): static
     {
         if (!$this->elementMenu->contains($elementMenu)) {
             $this->elementMenu->add($elementMenu);
@@ -72,10 +66,9 @@ class Page
         return $this;
     }
 
-    public function removeElementMenu(elementMenu $elementMenu): static
+    public function removeElementMenu(ElementMenu $elementMenu): static
     {
         if ($this->elementMenu->removeElement($elementMenu)) {
-            // set the owning side to null (unless already changed)
             if ($elementMenu->getPage() === $this) {
                 $elementMenu->setPage(null);
             }
@@ -84,15 +77,12 @@ class Page
         return $this;
     }
 
-    /**
-     * @return Collection<int, bloc>
-     */
     public function getBloc(): Collection
     {
         return $this->bloc;
     }
 
-    public function addBloc(bloc $bloc): static
+    public function addBloc(Bloc $bloc): static
     {
         if (!$this->bloc->contains($bloc)) {
             $this->bloc->add($bloc);
@@ -102,16 +92,43 @@ class Page
         return $this;
     }
 
-    public function removeBloc(bloc $bloc): static
+    public function removeBloc(Bloc $bloc): static
     {
         if ($this->bloc->removeElement($bloc)) {
-            // set the owning side to null (unless already changed)
             if ($bloc->getPage() === $this) {
                 $bloc->setPage(null);
             }
         }
 
         return $this;
+    }
+
+    public function getResumeBlocs(): string
+    {
+        $labels = [];
+
+        foreach ($this->getBloc() as $bloc) {
+            $labels[] = $bloc->getLibelle()
+                ?: sprintf('Bloc #%d - %s', $bloc->getId(), $bloc->getType() ?? 'sans type');
+        }
+
+        return $labels !== [] ? implode(', ', $labels) : '—';
+    }
+
+    public function getResumeElementsMenu(): string
+    {
+        $labels = [];
+
+        foreach ($this->getElementMenu() as $elementMenu) {
+            $menuLabel = $elementMenu->getMenu()?->getLibelle();
+            $elementLabel = $elementMenu->getLibelle();
+
+            $labels[] = $menuLabel
+                ? sprintf('%s > %s', $menuLabel, $elementLabel)
+                : ($elementLabel ?? '—');
+        }
+
+        return $labels !== [] ? implode(', ', $labels) : '—';
     }
 
     public function __toString(): string
