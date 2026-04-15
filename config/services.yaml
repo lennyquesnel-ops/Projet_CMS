@@ -19,3 +19,7 @@ services:
         arguments:
             $blocsUploadDir: '%app.uploads.blocs_dir%'
             $blocsUploadPath: '%app.uploads.blocs_path%'
+
+    App\Controller\Admin\ParametreCrudController:
+        arguments:
+            $blocsUploadPath: '%app.uploads.blocs_path%'

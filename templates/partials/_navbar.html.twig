@@ -1,6 +1,16 @@
 <nav class="site-navbar">
     <div class="site-navbar__inner">
-        <a href="#" class="site-navbar__brand">ATAIS Informatique</a>
+        <a href="{{ path('app_home') }}" class="site-navbar__brand">
+            {% if siteParametre is defined and siteParametre and siteParametre.logoSite %}
+                <img
+                    src="{{ asset(blocs_upload_path ~ '/' ~ siteParametre.logoSite) }}"
+                    alt="Logo du site"
+                    class="site-navbar__logo"
+                >
+            {% else %}
+                ATAIS Informatique
+            {% endif %}
+        </a>
 
         <ul class="site-navbar__menu">
             {% set currentRoute = app.request.attributes.get('_route') %}

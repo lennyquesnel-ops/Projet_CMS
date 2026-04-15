@@ -1,5 +1,7 @@
 twig:
     file_name_pattern: '*.twig'
+    globals:
+        blocs_upload_path: '%app.uploads.blocs_path%'
 
 when@test:
     twig:

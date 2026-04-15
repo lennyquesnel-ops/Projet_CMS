@@ -9,6 +9,20 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PageController extends AbstractController
 {
+    #[Route('/', name: 'app_home')]
+    public function home(PageRepository $pageRepository): Response
+    {
+        $slug = $pageRepository->findHomepageSlug();
+
+        if ($slug === null) {
+            throw $this->createNotFoundException('Aucune page n\'est disponible.');
+        }
+
+        return $this->redirectToRoute('app_page_show', [
+            'slug' => $slug,
+        ]);
+    }
+
     #[Route('/page/{slug}', name: 'app_page_show')]
     public function show(
         string $slug,

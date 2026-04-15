@@ -38,4 +38,38 @@ class PageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findHomepageSlug(): ?string
+    {
+        $result = $this->createQueryBuilder('p')
+            ->select('p.slug')
+            ->where('p.slug = :accueil')
+            ->setParameter('accueil', 'accueil')
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($result !== null) {
+            return $result['slug'];
+        }
+
+        $result = $this->createQueryBuilder('p')
+            ->select('p.slug')
+            ->where('p.slug = :home')
+            ->setParameter('home', 'home')
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($result !== null) {
+            return $result['slug'];
+        }
+
+        $result = $this->createQueryBuilder('p')
+            ->select('p.slug')
+            ->orderBy('p.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result['slug'] ?? null;
+    }
 }

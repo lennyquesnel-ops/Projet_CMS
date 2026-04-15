@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
+        {% set siteParametre = get_site_parametre() %}
+
         <meta charset="UTF-8">
         <title>{% block title %}ATAIS Informatique{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+
+        {% if siteParametre and siteParametre.url %}
+            <link rel="canonical" href="{{ siteParametre.url ~ app.request.pathInfo }}">
+        {% endif %}
 
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('css/site.css') }}">
@@ -21,7 +27,10 @@
         {% endif %}
     </head>
     <body>
-        {% include 'partials/_navbar.html.twig' with { menus: get_menus() } %}
+        {% include 'partials/_navbar.html.twig' with {
+            menus: get_menus(),
+            siteParametre: siteParametre
+        } %}
 
         <main class="site-main">
             {% block body %}{% endblock %}
