@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Bloc;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,15 @@ class BlocRepository extends ServiceEntityRepository
         parent::__construct($registry, Bloc::class);
     }
 
-    //    /**
-    //     * @return Bloc[] Returns an array of Bloc objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Bloc
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function addAdminIndexJoins(QueryBuilder $qb): QueryBuilder
+    {
+        return $qb
+            ->leftJoin('entity.page', 'p')
+            ->addSelect('p')
+            ->leftJoin('entity.elementMenu', 'em')
+            ->addSelect('em')
+            ->leftJoin('entity.medias', 'm')
+            ->addSelect('m')
+            ->distinct();
+    }
 }

@@ -1,15 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ page.slug }}{% endblock %}
+{% set pageTitle = page.slug|replace({'-': ' '})|title %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
 
 {% block body %}
-    <div class="page-contenu">
-        {% for bloc in page.bloc %}
-            {% if bloc.estVisible %}
-                <section id="bloc-{{ bloc.id }}" class="bloc-contenu">
-                    {{ bloc.contenu|raw }}
-                </section>
-            {% endif %}
-        {% endfor %}
+    <div class="page-wrapper">
+        <header class="page-header">
+            <h1 class="page-title">{{ pageTitle }}</h1>
+        </header>
+
+        <div class="page-contenu">
+            {% for bloc in page.bloc %}
+                {% if bloc.estVisible %}
+                    <section id="bloc-{{ bloc.id }}" class="page-section">
+                        <div class="bloc-contenu">
+                            {{ bloc.contenu|raw }}
+                        </div>
+                    </section>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

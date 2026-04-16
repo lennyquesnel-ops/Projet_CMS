@@ -27,8 +27,7 @@ class Menu
     /**
      * @var Collection<int, ElementMenu>
      */
-    #[ORM\OneToMany(targetEntity: ElementMenu::class, mappedBy: 'menu')]
-    #[ORM\OrderBy(['ordre' => 'ASC'])]
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: ElementMenu::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $elementMenu;
 
     public function __construct()

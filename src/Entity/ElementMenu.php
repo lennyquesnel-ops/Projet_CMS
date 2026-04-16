@@ -28,7 +28,7 @@ class ElementMenu
     private ?Bloc $bloc = null;
 
     #[ORM\ManyToOne(inversedBy: 'elementMenu')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Menu $menu = null;
 
     #[ORM\ManyToOne(inversedBy: 'elementMenu')]

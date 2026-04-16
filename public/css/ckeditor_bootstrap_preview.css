@@ -1,0 +1,41 @@
+body {
+    max-width: 1400px;
+    margin: 0 auto;
+    color: #212529;
+    background: #ffffff;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+section,
+header,
+footer,
+main,
+article {
+    display: block;
+}
+
+.row {
+    min-height: 24px;
+}
+
+.row > [class^="col"],
+.row > [class*=" col-"] {
+    min-height: 24px;
+}
+
+.container,
+.container-fluid {
+    min-height: 24px;
+}
+
+table {
+    width: 100%;
+}
+
+.btn {
+    pointer-events: none;
+}
