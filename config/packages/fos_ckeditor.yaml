@@ -12,6 +12,8 @@ fos_ck_editor:
             language: fr
             height: 500
             clipboard_handleImages: false
+            extraPlugins: "div"
+            allowedContent: true
             format_tags: "p;h1;h2;h3;h4"
 
             contentsCss:
@@ -22,12 +24,12 @@ fos_ck_editor:
 
             toolbar:
                 - [ 'Format', '-', 'Bold', 'Italic', 'Underline', '-', 'RemoveFormat' ]
-                - [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent' ]
+                - [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'CreateDiv' ]
                 - [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ]
                 - [ 'Link', 'Unlink', 'Image', 'Table', 'HorizontalRule' ]
                 - [ 'Undo', 'Redo', '-', 'Source', 'Maximize' ]
 
-            allowedContent: true
+            
             extraAllowedContent: 'section(*){*}[*];div(*){*}[*];header(*){*}[*];footer(*){*}[*];main(*){*}[*];article(*){*}[*];span(*){*}[*];a[*]{*}(*);img[*]{*}(*);table(*){*}[*];thead[*]{*}(*);tbody[*]{*}(*);tr[*]{*}(*);th[*]{*}(*);td[*]{*}(*);button[*]{*}(*);i(*){*}[*]'
 
             filebrowserUploadRoute: admin_bloc_upload_image

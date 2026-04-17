@@ -5,9 +5,9 @@ namespace App\Controller\Admin;
 use App\Entity\Bloc;
 use App\Repository\BlocRepository;
 use Doctrine\ORM\QueryBuilder;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
@@ -39,35 +40,75 @@ class BlocCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Bloc')
             ->setEntityLabelInPlural('Blocs')
-            ->setDefaultSort(['ordre' => 'ASC']);
+            ->setDefaultSort(['page' => 'ASC', 'ordre' => 'ASC'])
+            ->setSearchFields(['libelle', 'type', 'contenu', 'page.slug'])
+            ->setPageTitle(Crud::PAGE_INDEX, 'Blocs')
+            ->setPageTitle(Crud::PAGE_NEW, 'Créer un bloc')
+            ->setPageTitle(Crud::PAGE_EDIT, 'Modifier le bloc');
     }
 
     public function configureFields(string $pageName): iterable
     {
-        return [
-            IdField::new('id')->hideOnForm(),
+        yield FormField::addFieldset('Organisation du bloc');
 
-            TextField::new('libelle', 'Libellé'),
+        yield IdField::new('id')
+            ->hideOnForm();
 
-            ChoiceField::new('type')
-                ->setChoices([
-                    'Bloc WYSIWYG' => 'wysiwyg',
-                ]),
+        yield TextField::new('libelle', 'Libellé')
+            ->setHelp('Nom interne visible dans l’admin. Exemple : Accueil, Services, Contact.')
+            ->setColumns(6);
 
-            AssociationField::new('page', 'Page')
-                ->setFormTypeOption('choice_label', 'slug'),
+        yield AssociationField::new('page', 'Page')
+            ->autocomplete()
+            ->setHelp('Page sur laquelle ce bloc sera affiché.')
+            ->setColumns(6);
 
-            IntegerField::new('ordre', 'Ordre'),
+        yield IntegerField::new('ordre', 'Ordre')
+            ->setHelp('Position du bloc dans la page.')
+            ->setColumns(4);
 
-            BooleanField::new('est_visible', 'Visible'),
+        yield BooleanField::new('est_visible', 'Visible')
+            ->renderAsSwitch(false)
+            ->setHelp('Décoche pour préparer un bloc sans l’afficher sur le site.')
+            ->setColumns(4);
 
-            TextareaField::new('contenu')
-                ->setFormType(CKEditorType::class)
-                ->setFormTypeOptions([
-                    'config_name' => 'bloc_config',
-                ])
-                ->hideOnIndex(),
-        ];
+        yield ChoiceField::new('type', 'Type')
+            ->setChoices([
+                'Bloc WYSIWYG' => 'wysiwyg',
+            ])
+            ->setHelp('Pour le moment, le contenu est édité dans CKEditor avec Bootstrap.')
+            ->setColumns(4);
+
+        yield FormField::addFieldset('Contenu');
+
+        yield TextareaField::new('contenu', 'Contenu')
+            ->setFormType(CKEditorType::class)
+            ->setFormTypeOptions([
+                'config_name' => 'bloc_config',
+            ])
+            ->setHelp('Tu peux écrire du HTML Bootstrap directement dans CKEditor. Exemple : container, row, col-md-6, btn, card…')
+            ->hideOnIndex()
+            ->setColumns(12);
+    }
+
+    public function createEntity(string $entityFqcn): Bloc
+    {
+        $bloc = new Bloc();
+        $bloc->setType('wysiwyg');
+        $bloc->setOrdre(1);
+        $bloc->setEstVisible(true);
+        $bloc->setContenu(
+            '<section class="container py-5">' . PHP_EOL .
+            '    <div class="row">' . PHP_EOL .
+            '        <div class="col-12">' . PHP_EOL .
+            '            <h2>Nouveau bloc</h2>' . PHP_EOL .
+            '            <p>Remplace ce contenu par ta mise en page Bootstrap.</p>' . PHP_EOL .
+            '        </div>' . PHP_EOL .
+            '    </div>' . PHP_EOL .
+            '</section>'
+        );
+
+        return $bloc;
     }
 
     public function createIndexQueryBuilder(

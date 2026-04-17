@@ -133,6 +133,6 @@ class Page
 
     public function __toString(): string
     {
-        return $this->slug ?? 'Nouvelle page';
+        return $this->getSlug() ?: 'Page sans slug';
     }
 }
