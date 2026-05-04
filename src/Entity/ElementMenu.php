@@ -41,11 +41,15 @@ class ElementMenu
             return;
         }
 
-        if ($this->bloc->getPage() !== $this->page) {
-            $context->buildViolation('Le bloc sélectionné doit appartenir à la page choisie.')
-                ->atPath('bloc')
-                ->addViolation();
+        foreach ($this->page->getPageBlocs() as $pageBloc) {
+            if ($pageBloc->getBloc() === $this->bloc) {
+                return;
+            }
         }
+
+        $context->buildViolation('Le bloc sélectionné doit être associé à la page choisie dans le CRUD Page.')
+            ->atPath('bloc')
+            ->addViolation();
     }
 
     public function getId(): ?int

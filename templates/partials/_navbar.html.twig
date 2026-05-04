@@ -22,9 +22,6 @@
 
                 {% for element in elementsVisibles %}
                     {% set targetPage = element.page %}
-                    {% if not targetPage and element.bloc and element.bloc.page %}
-                        {% set targetPage = element.bloc.page %}
-                    {% endif %}
 
                     {% if targetPage and currentRoute == 'app_page_show' and targetPage.slug == currentSlug %}
                         {% set menuActif = true %}
@@ -40,15 +37,13 @@
                         <ul class="site-navbar__dropdown">
                             {% for element in elementsVisibles %}
                                 {% set targetPage = element.page %}
-                                {% if not targetPage and element.bloc and element.bloc.page %}
-                                    {% set targetPage = element.bloc.page %}
-                                {% endif %}
-
                                 {% set targetAnchor = element.bloc ? 'bloc-' ~ element.bloc.id : null %}
 
                                 {% set targetHref = null %}
+
                                 {% if targetPage %}
                                     {% set targetHref = path('app_page_show', { slug: targetPage.slug }) %}
+
                                     {% if targetAnchor %}
                                         {% set targetHref = targetHref ~ '#' ~ targetAnchor %}
                                     {% endif %}

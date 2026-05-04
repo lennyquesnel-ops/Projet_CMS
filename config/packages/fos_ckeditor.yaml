@@ -23,11 +23,12 @@ fos_ck_editor:
             bodyClass: 'p-4 bg-white'
 
             toolbar:
-                - [ 'Format', '-', 'Bold', 'Italic', 'Underline', '-', 'RemoveFormat' ]
-                - [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'CreateDiv' ]
-                - [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ]
-                - [ 'Link', 'Unlink', 'Image', 'Table', 'HorizontalRule' ]
-                - [ 'Undo', 'Redo', '-', 'Source', 'Maximize' ]
+            - [ 'Format' ]
+            - [ 'Bold', 'Italic', 'Underline', 'RemoveFormat' ]
+            - [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent' ]
+            - [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ]
+            - [ 'Link', 'Unlink', 'Image', 'Table', 'HorizontalRule', 'CreateDiv' ]
+            - [ 'Undo', 'Redo', 'Source', 'Maximize' ]
 
             
             extraAllowedContent: 'section(*){*}[*];div(*){*}[*];header(*){*}[*];footer(*){*}[*];main(*){*}[*];article(*){*}[*];span(*){*}[*];a[*]{*}(*);img[*]{*}(*);table(*){*}[*];thead[*]{*}(*);tbody[*]{*}(*);tr[*]{*}(*);th[*]{*}(*);td[*]{*}(*);button[*]{*}(*);i(*){*}[*]'

@@ -39,3 +39,93 @@ table {
 .btn {
     pointer-events: none;
 }
+
+div,
+section,
+header,
+footer,
+main,
+article {
+    position: relative;
+    min-height: 24px;
+    box-sizing: border-box;
+}
+
+/* Mise en évidence visuelle des conteneurs */
+div {
+    outline: 1px dashed #0d6efd;
+    background: rgba(13, 110, 253, 0.03);
+    padding-top: 22px;
+}
+
+section {
+    outline: 1px dashed #198754;
+    background: rgba(25, 135, 84, 0.03);
+    padding-top: 22px;
+}
+
+/* Etiquette persistante avec le nom du tag + la classe */
+div[class]::before {
+    content: "div." attr(class);
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 11px;
+    line-height: 1;
+    padding: 4px 6px;
+    background: #0d6efd;
+    color: #fff;
+    border-radius: 0 0 6px 0;
+    z-index: 5;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+section[class]::before {
+    content: "section." attr(class);
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 11px;
+    line-height: 1;
+    padding: 4px 6px;
+    background: #198754;
+    color: #fff;
+    border-radius: 0 0 6px 0;
+    z-index: 5;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Cas sans classe */
+div:not([class])::before {
+    content: "div";
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 11px;
+    line-height: 1;
+    padding: 4px 6px;
+    background: #6c757d;
+    color: #fff;
+    border-radius: 0 0 6px 0;
+    z-index: 5;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+section:not([class])::before {
+    content: "section";
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 11px;
+    line-height: 1;
+    padding: 4px 6px;
+    background: #6c757d;
+    color: #fff;
+    border-radius: 0 0 6px 0;
+    z-index: 5;
+    white-space: nowrap;
+    pointer-events: none;
+}

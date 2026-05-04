@@ -19,14 +19,8 @@ class Bloc
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $libelle = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $type = null;
-
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
-
-    #[ORM\Column]
-    private ?int $ordre = null;
 
     #[ORM\Column]
     private ?bool $est_visible = null;
@@ -37,12 +31,16 @@ class Bloc
     #[ORM\ManyToMany(targetEntity: Media::class, inversedBy: 'blocs')]
     private Collection $medias;
 
-    #[ORM\ManyToOne(inversedBy: 'bloc')]
-    private ?Page $page = null;
+    /**
+     * @var Collection<int, PageBloc>
+     */
+    #[ORM\OneToMany(mappedBy: 'bloc', targetEntity: PageBloc::class, orphanRemoval: true)]
+    private Collection $pageBlocs;
 
     public function __construct()
     {
         $this->medias = new ArrayCollection();
+        $this->pageBlocs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -62,18 +60,6 @@ class Bloc
         return $this;
     }
 
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getContenu(): ?string
     {
         return $this->contenu;
@@ -82,18 +68,6 @@ class Bloc
     public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
-
-        return $this;
-    }
-
-    public function getOrdre(): ?int
-    {
-        return $this->ordre;
-    }
-
-    public function setOrdre(int $ordre): static
-    {
-        $this->ordre = $ordre;
 
         return $this;
     }
@@ -122,6 +96,9 @@ class Bloc
         return $this;
     }
 
+    /**
+     * @return Collection<int, Media>
+     */
     public function getMedias(): Collection
     {
         return $this->medias;
@@ -143,21 +120,55 @@ class Bloc
         return $this;
     }
 
-    public function getPage(): ?Page
+    /**
+     * @return Collection<int, PageBloc>
+     */
+    public function getPageBlocs(): Collection
     {
-        return $this->page;
+        return $this->pageBlocs;
     }
 
-    public function setPage(?Page $page): static
+    public function addPageBloc(PageBloc $pageBloc): static
     {
-        $this->page = $page;
+        if (!$this->pageBlocs->contains($pageBloc)) {
+            $this->pageBlocs->add($pageBloc);
+            $pageBloc->setBloc($this);
+        }
 
         return $this;
+    }
+
+    public function removePageBloc(PageBloc $pageBloc): static
+    {
+        if ($this->pageBlocs->removeElement($pageBloc)) {
+            if ($pageBloc->getBloc() === $this) {
+                $pageBloc->setBloc(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getResumePages(): string
+    {
+        $labels = [];
+
+        foreach ($this->getPageBlocs() as $pageBloc) {
+            $page = $pageBloc->getPage();
+
+            if ($page === null) {
+                continue;
+            }
+
+            $labels[] = sprintf('%s (ordre %d)', $page->getSlug(), $pageBloc->getOrdre());
+        }
+
+        return $labels !== [] ? implode(', ', $labels) : '—';
     }
 
     public function __toString(): string
     {
         return $this->libelle
-            ?: sprintf('Bloc #%s - %s', $this->id ?? '?', $this->type ?? 'sans type');
+            ?: sprintf('Bloc #%s', $this->id ?? '?');
     }
 }

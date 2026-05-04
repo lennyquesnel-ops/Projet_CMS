@@ -20,7 +20,8 @@ class PageRepository extends ServiceEntityRepository
     public function addAdminIndexJoins(QueryBuilder $qb): QueryBuilder
     {
         return $qb
-            ->leftJoin('entity.bloc', 'b')->addSelect('b')
+            ->leftJoin('entity.pageBlocs', 'pb')->addSelect('pb')
+            ->leftJoin('pb.bloc', 'b')->addSelect('b')
             ->leftJoin('entity.elementMenu', 'em')->addSelect('em')
             ->leftJoin('em.menu', 'm')->addSelect('m')
             ->leftJoin('em.bloc', 'emb')->addSelect('emb')
@@ -30,11 +31,13 @@ class PageRepository extends ServiceEntityRepository
     public function findOneBySlugWithBlocs(string $slug): ?Page
     {
         return $this->createQueryBuilder('p')
-            ->leftJoin('p.bloc', 'b')
+            ->leftJoin('p.pageBlocs', 'pb')
+            ->addSelect('pb')
+            ->leftJoin('pb.bloc', 'b')
             ->addSelect('b')
             ->andWhere('p.slug = :slug')
             ->setParameter('slug', $slug)
-            ->orderBy('b.ordre', 'ASC')
+            ->orderBy('pb.ordre', 'ASC')
             ->getQuery()
             ->getOneOrNullResult();
     }

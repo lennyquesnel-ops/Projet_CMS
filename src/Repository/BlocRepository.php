@@ -20,7 +20,9 @@ class BlocRepository extends ServiceEntityRepository
     public function addAdminIndexJoins(QueryBuilder $qb): QueryBuilder
     {
         return $qb
-            ->leftJoin('entity.page', 'p')
+            ->leftJoin('entity.pageBlocs', 'pb')
+            ->addSelect('pb')
+            ->leftJoin('pb.page', 'p')
             ->addSelect('p')
             ->leftJoin('entity.elementMenu', 'em')
             ->addSelect('em')

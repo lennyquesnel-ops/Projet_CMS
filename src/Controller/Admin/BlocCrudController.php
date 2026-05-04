@@ -14,12 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -40,8 +37,8 @@ class BlocCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Bloc')
             ->setEntityLabelInPlural('Blocs')
-            ->setDefaultSort(['page' => 'ASC', 'ordre' => 'ASC'])
-            ->setSearchFields(['libelle', 'type', 'contenu', 'page.slug'])
+            ->setDefaultSort(['id' => 'DESC'])
+            ->setSearchFields(['libelle', 'contenu', 'pageBlocs.page.slug'])
             ->setPageTitle(Crud::PAGE_INDEX, 'Blocs')
             ->setPageTitle(Crud::PAGE_NEW, 'Créer un bloc')
             ->setPageTitle(Crud::PAGE_EDIT, 'Modifier le bloc');
@@ -49,7 +46,7 @@ class BlocCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield FormField::addFieldset('Organisation du bloc');
+        yield FormField::addFieldset('Informations du bloc');
 
         yield IdField::new('id')
             ->hideOnForm();
@@ -58,25 +55,12 @@ class BlocCrudController extends AbstractCrudController
             ->setHelp('Nom interne visible dans l’admin. Exemple : Accueil, Services, Contact.')
             ->setColumns(6);
 
-        yield AssociationField::new('page', 'Page')
-            ->autocomplete()
-            ->setHelp('Page sur laquelle ce bloc sera affiché.')
-            ->setColumns(6);
-
-        yield IntegerField::new('ordre', 'Ordre')
-            ->setHelp('Position du bloc dans la page.')
-            ->setColumns(4);
+        yield TextField::new('resumePages', 'Pages où ce bloc est utilisé')
+            ->onlyOnIndex();
 
         yield BooleanField::new('est_visible', 'Visible')
             ->renderAsSwitch(false)
             ->setHelp('Décoche pour préparer un bloc sans l’afficher sur le site.')
-            ->setColumns(4);
-
-        yield ChoiceField::new('type', 'Type')
-            ->setChoices([
-                'Bloc WYSIWYG' => 'wysiwyg',
-            ])
-            ->setHelp('Pour le moment, le contenu est édité dans CKEditor avec Bootstrap.')
             ->setColumns(4);
 
         yield FormField::addFieldset('Contenu');
@@ -94,8 +78,6 @@ class BlocCrudController extends AbstractCrudController
     public function createEntity(string $entityFqcn): Bloc
     {
         $bloc = new Bloc();
-        $bloc->setType('wysiwyg');
-        $bloc->setOrdre(1);
         $bloc->setEstVisible(true);
         $bloc->setContenu(
             '<section class="container py-5">' . PHP_EOL .

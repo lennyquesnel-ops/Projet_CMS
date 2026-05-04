@@ -166,3 +166,100 @@ body.login-page-atais .wrapper {
     display: block;
     margin: 1rem 0;
 }
+
+/* ===== CKEDITOR : toolbar style Bootstrap ===== */
+
+.cke_chrome {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.08) !important;
+    background: #fff !important;
+}
+
+.cke_top {
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    padding: 0.75rem !important;
+}
+
+.cke_bottom {
+    background: #f8f9fa !important;
+    border-top: 1px solid #dee2e6 !important;
+}
+
+.cke_toolgroup {
+    background: #fff !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.5rem !important;
+    box-shadow: none !important;
+    margin: 0 0.5rem 0.5rem 0 !important;
+    padding: 0.15rem !important;
+}
+
+.cke_toolbar {
+    margin-bottom: 0.35rem !important;
+}
+
+.cke_button,
+.cke_combo_button {
+    border-radius: 0.375rem !important;
+    border: 1px solid transparent !important;
+    transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease !important;
+}
+
+.cke_button:hover,
+.cke_combo_button:hover {
+    background: #e9ecef !important;
+    border-color: #ced4da !important;
+}
+
+.cke_button_on,
+.cke_button_on:hover,
+.cke_button.cke_button_on {
+    background: #0d6efd !important;
+    border-color: #0d6efd !important;
+    box-shadow: none !important;
+}
+
+.cke_button_on .cke_button_label {
+    color: #fff !important;
+}
+
+.cke_combo_button {
+    background: #fff !important;
+    padding: 0.1rem 0.35rem !important;
+}
+
+.cke_combo_button:hover {
+    background: #e9ecef !important;
+}
+
+.cke_combo_text {
+    color: #212529 !important;
+    font-size: 0.95rem !important;
+}
+
+.cke_combo_arrow {
+    border-top-color: #6c757d !important;
+}
+
+.cke_button_label {
+    color: #212529 !important;
+}
+
+.cke_separator {
+    border-left: 1px solid #dee2e6 !important;
+    margin: 0 0.25rem !important;
+}
+
+.cke_contents {
+    border-top: 1px solid #dee2e6 !important;
+    background: #fff !important;
+}
+
+.cke_path {
+    background: #f8f9fa !important;
+    color: #6c757d !important;
+    font-size: 0.85rem !important;
+}

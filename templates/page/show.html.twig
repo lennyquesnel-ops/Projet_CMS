@@ -11,14 +11,18 @@
         </header>
 
         <div class="page-contenu">
-            {% for bloc in page.bloc %}
-                {% if bloc.estVisible %}
+            {% for pageBloc in page.pageBlocs %}
+                {% set bloc = pageBloc.bloc %}
+
+                {% if bloc and bloc.estVisible %}
                     <section id="bloc-{{ bloc.id }}" class="page-section">
                         <div class="bloc-contenu">
                             {{ bloc.contenu|raw }}
                         </div>
                     </section>
                 {% endif %}
+            {% else %}
+                <p>Aucun bloc n’est encore associé à cette page.</p>
             {% endfor %}
         </div>
     </div>

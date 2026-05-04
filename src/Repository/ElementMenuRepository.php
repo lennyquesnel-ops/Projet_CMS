@@ -26,8 +26,6 @@ class ElementMenuRepository extends ServiceEntityRepository
             ->addSelect('p')
             ->leftJoin('entity.bloc', 'b')
             ->addSelect('b')
-            ->leftJoin('b.page', 'bp')
-            ->addSelect('bp')
             ->distinct();
     }
 }

@@ -36,3 +36,33 @@ CKEDITOR.editorConfig = function( config ) {
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 };
+
+CKEDITOR.on('dialogDefinition', function (ev) {
+    const dialogName = ev.data.name;
+    const dialogDefinition = ev.data.definition;
+
+    if (dialogName === 'image') {
+        const infoTab = dialogDefinition.getContents('info');
+
+        infoTab.add({
+            type: 'text',
+            id: 'txtCssClass',
+            label: 'Classe CSS',
+            'default': '',
+
+            setup: function (type, element) {
+                this.setValue(element.getAttribute('class') || '');
+            },
+
+            commit: function (type, element) {
+                const value = this.getValue().trim();
+
+                if (value) {
+                    element.setAttribute('class', value);
+                } else {
+                    element.removeAttribute('class');
+                }
+            }
+        });
+    }
+});

@@ -29,7 +29,6 @@ class MenuRepository extends ServiceEntityRepository
             ->setParameter('visible', true)
             ->orderBy('m.ordre', 'ASC')
             ->addOrderBy('em.ordre', 'ASC')
-            ->addOrderBy('b.ordre', 'ASC')
             ->getQuery()
             ->getResult();
     }

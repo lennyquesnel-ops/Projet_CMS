@@ -24,14 +24,17 @@ class Page
     #[ORM\OrderBy(['ordre' => 'ASC'])]
     private Collection $elementMenu;
 
-    #[ORM\OneToMany(targetEntity: Bloc::class, mappedBy: 'page')]
+    /**
+     * @var Collection<int, PageBloc>
+     */
+    #[ORM\OneToMany(mappedBy: 'page', targetEntity: PageBloc::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['ordre' => 'ASC'])]
-    private Collection $bloc;
+    private Collection $pageBlocs;
 
     public function __construct()
     {
         $this->elementMenu = new ArrayCollection();
-        $this->bloc = new ArrayCollection();
+        $this->pageBlocs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -51,6 +54,9 @@ class Page
         return $this;
     }
 
+    /**
+     * @return Collection<int, ElementMenu>
+     */
     public function getElementMenu(): Collection
     {
         return $this->elementMenu;
@@ -77,26 +83,29 @@ class Page
         return $this;
     }
 
-    public function getBloc(): Collection
+    /**
+     * @return Collection<int, PageBloc>
+     */
+    public function getPageBlocs(): Collection
     {
-        return $this->bloc;
+        return $this->pageBlocs;
     }
 
-    public function addBloc(Bloc $bloc): static
+    public function addPageBloc(PageBloc $pageBloc): static
     {
-        if (!$this->bloc->contains($bloc)) {
-            $this->bloc->add($bloc);
-            $bloc->setPage($this);
+        if (!$this->pageBlocs->contains($pageBloc)) {
+            $this->pageBlocs->add($pageBloc);
+            $pageBloc->setPage($this);
         }
 
         return $this;
     }
 
-    public function removeBloc(Bloc $bloc): static
+    public function removePageBloc(PageBloc $pageBloc): static
     {
-        if ($this->bloc->removeElement($bloc)) {
-            if ($bloc->getPage() === $this) {
-                $bloc->setPage(null);
+        if ($this->pageBlocs->removeElement($pageBloc)) {
+            if ($pageBloc->getPage() === $this) {
+                $pageBloc->setPage(null);
             }
         }
 
@@ -107,9 +116,18 @@ class Page
     {
         $labels = [];
 
-        foreach ($this->getBloc() as $bloc) {
-            $labels[] = $bloc->getLibelle()
-                ?: sprintf('Bloc #%d - %s', $bloc->getId(), $bloc->getType() ?? 'sans type');
+        foreach ($this->getPageBlocs() as $pageBloc) {
+            $bloc = $pageBloc->getBloc();
+
+            if ($bloc === null) {
+                continue;
+            }
+
+            $labels[] = sprintf(
+                '%d - %s',
+                $pageBloc->getOrdre(),
+                $bloc->getLibelle() ?: sprintf('Bloc #%d', $bloc->getId())
+            );
         }
 
         return $labels !== [] ? implode(', ', $labels) : '—';
