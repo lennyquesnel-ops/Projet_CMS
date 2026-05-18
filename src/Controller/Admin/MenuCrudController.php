@@ -39,7 +39,8 @@ class MenuCrudController extends AbstractCrudController
             ->setSearchFields(['libelle', 'elementMenu.libelle'])
             ->setPageTitle(Crud::PAGE_INDEX, 'Menus')
             ->setPageTitle(Crud::PAGE_NEW, 'Créer un menu')
-            ->setPageTitle(Crud::PAGE_EDIT, 'Modifier le menu');
+            ->setPageTitle(Crud::PAGE_EDIT, 'Modifier le menu')
+            ->setEntityPermission('ROLE_ADMIN');
     }
 
     public function configureFields(string $pageName): iterable

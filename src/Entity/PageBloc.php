@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PageBlocRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PageBlocRepository::class)]
 class PageBloc
@@ -15,13 +16,21 @@ class PageBloc
 
     #[ORM\ManyToOne(inversedBy: 'pageBlocs')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[Assert\NotNull(message: 'La page est obligatoire.')]
     private ?Page $page = null;
 
     #[ORM\ManyToOne(inversedBy: 'pageBlocs')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[Assert\NotNull(message: 'Le bloc est obligatoire.')]
     private ?Bloc $bloc = null;
 
     #[ORM\Column(options: ['default' => 1])]
+    #[Assert\NotBlank(message: 'L’ordre est obligatoire.')]
+    #[Assert\Type(
+        type: 'integer',
+        message: 'L’ordre doit être un nombre entier.'
+    )]
+    #[Assert\Positive(message: 'L’ordre doit être supérieur à 0.')]
     private ?int $ordre = 1;
 
     public function getId(): ?int
@@ -58,7 +67,7 @@ class PageBloc
         return $this->ordre;
     }
 
-    public function setOrdre(int $ordre): static
+    public function setOrdre(?int $ordre): static
     {
         $this->ordre = $ordre;
 

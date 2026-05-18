@@ -11,15 +11,20 @@
     <div class="media-grid">
         {% for media in medias %}
             <div class="media-card">
-                <img src="{{ asset(media_base_path ~ '/' ~ media.chemin) }}" alt="{{ media.libelleMedia }}">
+                <img
+                    src="{{ asset(media_base_path ~ '/' ~ media.chemin) }}"
+                    alt="{{ media.libelleMedia }}"
+                >
 
                 <div class="media-card__body">
-                    <div class="media-card__title">{{ media.libelleMedia }}</div>
+                    <div class="media-card__title">
+                        {{ media.libelleMedia }}
+                    </div>
 
                     <button
                         type="button"
                         class="media-card__button"
-                        onclick="selectMedia('{{ asset(media_base_path ~ '/' ~ media.chemin) }}', '{{ media.libelleMedia|e('js') }}')"
+                        onclick="selectMedia('{{ asset(media_base_path ~ '/' ~ media.chemin)|e('js') }}', '{{ media.chemin|e('js') }}', '{{ media.libelleMedia|e('js') }}')"
                     >
                         Utiliser cette image
                     </button>
@@ -31,17 +36,34 @@
     </div>
 
     <script>
-        function selectMedia(fileUrl, altText) {
+        function selectMedia(fileUrl, fileName, altText) {
             const params = new URLSearchParams(window.location.search);
+            const target = params.get('target');
             const funcNum = params.get('CKEditorFuncNum');
 
+            // Cas 1 : choix d'image pour le paramètre logo_site
+            if (window.opener && target) {
+                const targetField = window.opener.document.getElementById(target);
+
+                if (targetField) {
+                    targetField.value = fileName;
+                    targetField.dispatchEvent(new Event('input', { bubbles: true }));
+                    targetField.dispatchEvent(new Event('change', { bubbles: true }));
+                    window.close();
+                    return;
+                }
+            }
+
+            // Cas 2 : choix d'image pour CKEditor
             if (window.opener && window.opener.CKEDITOR && funcNum) {
                 window.opener.CKEDITOR.tools.callFunction(funcNum, fileUrl);
 
                 try {
                     const dialog = window.opener.CKEDITOR.dialog.getCurrent();
+
                     if (dialog) {
                         const altField = dialog.getContentElement('info', 'txtAlt');
+
                         if (altField && !altField.getValue()) {
                             altField.setValue(altText);
                         }

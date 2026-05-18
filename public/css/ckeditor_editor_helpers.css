@@ -1,0 +1,162 @@
+/* Aides visuelles CKEditor */
+
+body.ckeditor-preview {
+    max-width: 1400px;
+    margin: 0 auto;
+    color: #212529;
+    background: #ffffff;
+}
+
+body.ckeditor-preview img {
+    max-width: 100%;
+    height: auto;
+}
+
+body.ckeditor-preview section,
+body.ckeditor-preview header,
+body.ckeditor-preview footer,
+body.ckeditor-preview main,
+body.ckeditor-preview article {
+    display: block;
+}
+
+body.ckeditor-preview table {
+    width: 100%;
+}
+
+body.ckeditor-preview .btn {
+    pointer-events: none;
+}
+
+body.ckeditor-preview .row,
+body.ckeditor-preview .container,
+body.ckeditor-preview .container-fluid,
+body.ckeditor-preview .row > [class^="col"],
+body.ckeditor-preview .row > [class*=" col-"] {
+    min-height: 24px;
+}
+
+body.ckeditor-preview div,
+body.ckeditor-preview section,
+body.ckeditor-preview header,
+body.ckeditor-preview footer,
+body.ckeditor-preview main,
+body.ckeditor-preview article {
+    position: relative !important;
+    min-height: 24px;
+    box-sizing: border-box;
+}
+
+/* DIV : bleu */
+body.ckeditor-preview div {
+    outline: 1px dashed #0d6efd !important;
+    background: rgba(13, 110, 253, 0.03) !important;
+    padding-top: 22px !important;
+}
+
+/* SECTION : vert */
+body.ckeditor-preview section {
+    outline: 1px dashed #198754 !important;
+    background: rgba(25, 135, 84, 0.03) !important;
+    padding-top: 22px !important;
+}
+
+/* HEADER / FOOTER / MAIN / ARTICLE : gris */
+body.ckeditor-preview header,
+body.ckeditor-preview footer,
+body.ckeditor-preview main,
+body.ckeditor-preview article {
+    outline: 1px dashed #6c757d !important;
+    background: rgba(108, 117, 125, 0.04) !important;
+    padding-top: 22px !important;
+}
+
+/* Etiquettes communes */
+body.ckeditor-preview div::before,
+body.ckeditor-preview section::before,
+body.ckeditor-preview header::before,
+body.ckeditor-preview footer::before,
+body.ckeditor-preview main::before,
+body.ckeditor-preview article::before {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 5 !important;
+    display: inline-block !important;
+    padding: 4px 6px !important;
+    border-radius: 0 0 6px 0 !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-family: Arial, sans-serif !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    pointer-events: none !important;
+}
+
+/* DIV avec classe */
+body.ckeditor-preview div[class]::before {
+    content: "div." attr(class) !important;
+    background: #0d6efd !important;
+}
+
+/* SECTION avec classe */
+body.ckeditor-preview section[class]::before {
+    content: "section." attr(class) !important;
+    background: #198754 !important;
+}
+
+/* HEADER avec classe */
+body.ckeditor-preview header[class]::before {
+    content: "header." attr(class) !important;
+    background: #6c757d !important;
+}
+
+/* FOOTER avec classe */
+body.ckeditor-preview footer[class]::before {
+    content: "footer." attr(class) !important;
+    background: #6c757d !important;
+}
+
+/* MAIN avec classe */
+body.ckeditor-preview main[class]::before {
+    content: "main." attr(class) !important;
+    background: #6c757d !important;
+}
+
+/* ARTICLE avec classe */
+body.ckeditor-preview article[class]::before {
+    content: "article." attr(class) !important;
+    background: #6c757d !important;
+}
+
+/* Cas sans classe */
+body.ckeditor-preview div:not([class])::before {
+    content: "div" !important;
+    background: #6c757d !important;
+}
+
+body.ckeditor-preview section:not([class])::before {
+    content: "section" !important;
+    background: #6c757d !important;
+}
+
+body.ckeditor-preview header:not([class])::before {
+    content: "header" !important;
+    background: #6c757d !important;
+}
+
+body.ckeditor-preview footer:not([class])::before {
+    content: "footer" !important;
+    background: #6c757d !important;
+}
+
+body.ckeditor-preview main:not([class])::before {
+    content: "main" !important;
+    background: #6c757d !important;
+}
+
+body.ckeditor-preview article:not([class])::before {
+    content: "article" !important;
+    background: #6c757d !important;
+}

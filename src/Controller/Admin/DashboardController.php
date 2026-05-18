@@ -3,35 +3,25 @@
 namespace App\Controller\Admin;
 
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
     public function index(): Response
     {
-        return $this->redirectToRoute('admin_bloc_index');
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('admin_bloc_index');
+        }
 
-        // Option 1. You can make your dashboard redirect to some common page of your backend
-        //
-        // return $this->redirectToRoute('admin_user_index');
-
-        // Option 2. You can make your dashboard redirect to different pages depending on the user
-        //
-        // if ('jane' === $this->getUser()->getUsername()) {
-        //     return $this->redirectToRoute('...');
-        // }
-
-        // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
-        // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
-        //
-        // return $this->render('some/path/my-dashboard.html.twig');
+        return $this->redirectToRoute('admin_page_index');
     }
 
     public function configureDashboard(): Dashboard
@@ -42,15 +32,32 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkTo(BlocCrudController::class, 'Blocs', 'fa fa-cubes');
-        yield MenuItem::linkTo(UserCrudController::class, 'Utilisateurs', 'fa fa-users');
-        yield MenuItem::linkTo(MenuCrudController::class, 'Menus', 'fa fa-list');
-        yield MenuItem::linkTo(MediaCrudController::class, 'Médias', 'fa fa-images');
-        yield MenuItem::linkTo(PageCrudController::class, 'Pages', 'fa fa-file');
-        yield MenuItem::linkTo(ElementMenuCrudController::class, 'Éléments de menu', 'fa fa-list');
-        yield MenuItem::linkTo(ContactCrudController::class, 'Contacts', 'fa fa-envelope');
-        yield MenuItem::linkTo(ParametreCrudController::class, 'Paramètres', 'fa fa-cogs');
+        yield MenuItem::linkTo(PageCrudController::class, 'Pages', 'fa fa-file')
+            ->setPermission('ROLE_USER');
 
+        yield MenuItem::linkTo(BlocCrudController::class, 'Blocs', 'fa fa-cubes')
+            ->setPermission('ROLE_USER');
+
+        yield MenuItem::linkTo(UserCrudController::class, 'Utilisateurs', 'fa fa-users')
+            ->setPermission('ROLE_ADMIN');
+
+        yield MenuItem::linkTo(ProfilAccesCrudController::class, 'Profils d’accès', 'fa fa-user-lock')
+            ->setPermission('ROLE_ADMIN');
+
+        yield MenuItem::linkTo(MenuCrudController::class, 'Menus', 'fa fa-list')
+            ->setPermission('ROLE_ADMIN');
+
+        yield MenuItem::linkTo(MediaCrudController::class, 'Médias', 'fa fa-images')
+            ->setPermission('ROLE_ADMIN');
+
+        yield MenuItem::linkTo(ElementMenuCrudController::class, 'Éléments de menu', 'fa fa-list')
+            ->setPermission('ROLE_ADMIN');
+
+        yield MenuItem::linkTo(ContactCrudController::class, 'Contacts', 'fa fa-envelope')
+            ->setPermission('ROLE_ADMIN');
+
+        yield MenuItem::linkTo(ParametreCrudController::class, 'Paramètres', 'fa fa-cogs')
+            ->setPermission('ROLE_ADMIN');
     }
 
     public function configureAssets(): Assets
@@ -62,6 +69,29 @@ class DashboardController extends AbstractDashboardController
     public function configureCrud(): Crud
     {
         return Crud::new()
-            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
+            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig')
+            ->addFormTheme('admin/form/parametre_valeur_widget.html.twig')
+            ->showEntityActionsInlined();
+    }
+
+    public function configureActions(): Actions
+    {
+        return parent::configureActions()
+            ->update(
+                Crud::PAGE_INDEX,
+                Action::EDIT,
+                fn (Action $action) => $action
+                    ->setLabel(false)
+                    ->setIcon('fa fa-pen')
+                    ->setHtmlAttributes(['title' => 'Modifier'])
+            )
+            ->update(
+                Crud::PAGE_INDEX,
+                Action::DELETE,
+                fn (Action $action) => $action
+                    ->setLabel(false)
+                    ->setIcon('fa fa-trash')
+                    ->setHtmlAttributes(['title' => 'Supprimer'])
+            );
     }
 }

@@ -45,7 +45,8 @@ class ElementMenuCrudController extends AbstractCrudController
             ])
             ->setPageTitle(Crud::PAGE_INDEX, 'Éléments de menu')
             ->setPageTitle(Crud::PAGE_NEW, 'Créer un élément de menu')
-            ->setPageTitle(Crud::PAGE_EDIT, 'Modifier l’élément de menu');
+            ->setPageTitle(Crud::PAGE_EDIT, 'Modifier l’élément de menu')
+            ->setEntityPermission('ROLE_ADMIN');
     }
 
     public function configureFields(string $pageName): iterable
@@ -70,7 +71,6 @@ class ElementMenuCrudController extends AbstractCrudController
         yield AssociationField::new('menu', 'Menu parent')
             ->onlyOnForms()
             ->autocomplete()
-            ->setFormTypeOption('choice_label', 'libelle')
             ->setColumns(6);
 
         yield AssociationField::new('page', 'Page liée')
@@ -80,7 +80,6 @@ class ElementMenuCrudController extends AbstractCrudController
         yield AssociationField::new('page', 'Page liée')
             ->onlyOnForms()
             ->autocomplete()
-            ->setFormTypeOption('choice_label', 'slug')
             ->setHelp('Page vers laquelle cet élément de menu doit envoyer.')
             ->setColumns(6);
 

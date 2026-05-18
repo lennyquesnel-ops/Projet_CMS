@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BlocRepository::class)]
 class Bloc
@@ -17,6 +18,7 @@ class Bloc
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'Le libelle est obligatoire.')]
     private ?string $libelle = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -36,6 +38,34 @@ class Bloc
      */
     #[ORM\OneToMany(mappedBy: 'bloc', targetEntity: PageBloc::class, orphanRemoval: true)]
     private Collection $pageBlocs;
+
+    private ?Page $pageRattachement = null;
+
+    private ?int $ordreRattachement = 1;
+
+    public function getPageRattachement(): ?Page
+    {
+        return $this->pageRattachement;
+    }
+
+    public function setPageRattachement(?Page $pageRattachement): static
+    {
+        $this->pageRattachement = $pageRattachement;
+
+        return $this;
+    }
+
+    public function getOrdreRattachement(): ?int
+    {
+        return $this->ordreRattachement;
+    }
+
+    public function setOrdreRattachement(?int $ordreRattachement): static
+    {
+        $this->ordreRattachement = $ordreRattachement;
+
+        return $this;
+    }
 
     public function __construct()
     {

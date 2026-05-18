@@ -17,12 +17,18 @@ class SiteExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('get_site_parametre', [$this, 'getSiteParametre']),
+            new TwigFunction('get_parametre', [$this, 'getParametre']),
+            new TwigFunction('get_parametre_value', [$this, 'getParametreValue']),
         ];
     }
 
-    public function getSiteParametre(): ?Parametre
+    public function getParametre(string $code): ?Parametre
     {
-        return $this->parametreRepository->findCurrent();
+        return $this->parametreRepository->findOneByCode($code);
+    }
+
+    public function getParametreValue(string $code, ?string $default = null): ?string
+    {
+        return $this->parametreRepository->findValueByCode($code, $default);
     }
 }

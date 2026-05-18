@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
+
 #[ORM\Entity(repositoryClass: ElementMenuRepository::class)]
 class ElementMenu
 {
@@ -35,9 +36,21 @@ class ElementMenu
     private ?Page $page = null;
 
     #[Assert\Callback]
-    public function validateBlocEtPage(ExecutionContextInterface $context): void
+    public function validateDestination(ExecutionContextInterface $context): void
     {
-        if ($this->bloc === null || $this->page === null) {
+        if ($this->page === null && $this->bloc === null) {
+            $context->buildViolation('Vous devez choisir une page liée ou un bloc d’ancrage.')
+                ->atPath('page')
+                ->addViolation();
+
+            $context->buildViolation('Vous devez choisir une page liée ou un bloc d’ancrage.')
+                ->atPath('bloc')
+                ->addViolation();
+
+            return;
+        }
+
+        if ($this->page === null || $this->bloc === null) {
             return;
         }
 
@@ -150,4 +163,7 @@ class ElementMenu
     {
         return $this->libelle ?? 'Nouvel élément de menu';
     }
+
+
+    
 }

@@ -2,28 +2,31 @@
 
 {% set pageTitle = page.slug|replace({'-': ' '})|title %}
 
-{% block title %}{{ pageTitle }}{% endblock %}
+{% block title %}{{ pageTitle }} - ATAIS Informatique{% endblock %}
 
 {% block body %}
-    <div class="page-wrapper">
-        <header class="page-header">
-            <h1 class="page-title">{{ pageTitle }}</h1>
-        </header>
+	{% for pageBloc in page.pageBlocs %}
+		{% set bloc = pageBloc.bloc %}
 
-        <div class="page-contenu">
-            {% for pageBloc in page.pageBlocs %}
-                {% set bloc = pageBloc.bloc %}
+		{% if bloc and bloc.estVisible %}
+			<div id="bloc-{{ bloc.id }}"></div>
+			{{ bloc.contenu|raw }}
+		{% endif %}
+	{% else %}
+		<section class="section border-0 m-0 py-5">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8 text-center">
+						<h1 class="font-weight-bold text-color-dark mb-3">
+							{{ pageTitle }}
+						</h1>
 
-                {% if bloc and bloc.estVisible %}
-                    <section id="bloc-{{ bloc.id }}" class="page-section">
-                        <div class="bloc-contenu">
-                            {{ bloc.contenu|raw }}
-                        </div>
-                    </section>
-                {% endif %}
-            {% else %}
-                <p>Aucun bloc n’est encore associé à cette page.</p>
-            {% endfor %}
-        </div>
-    </div>
+						<p class="text-4 text-color-default">
+							Aucun bloc n’est encore associé à cette page.
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+	{% endfor %}
 {% endblock %}

@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Parametre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<Parametre>
@@ -17,13 +16,21 @@ class ParametreRepository extends ServiceEntityRepository
         parent::__construct($registry, Parametre::class);
     }
 
-    public function findCurrent(): ?Parametre
+    public function findOneByCode(string $code): ?Parametre
     {
-        return $this->createQueryBuilder('p')
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
+        return $this->findOneBy([
+            'code_parametre' => $code,
+        ]);
     }
 
+    public function findValueByCode(string $code, ?string $default = null): ?string
+    {
+        $parametre = $this->findOneByCode($code);
+
+        if (!$parametre) {
+            return $default;
+        }
+
+        return $parametre->getValeurParametre() ?: $default;
+    }
 }

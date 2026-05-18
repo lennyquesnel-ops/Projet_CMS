@@ -33,7 +33,8 @@ class MediaCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Média')
             ->setEntityLabelInPlural('Médiathèque')
-            ->setDefaultSort(['id' => 'DESC']);
+            ->setDefaultSort(['id' => 'DESC'])
+            ->setEntityPermission('ROLE_ADMIN');
     }
 
     public function configureFields(string $pageName): iterable

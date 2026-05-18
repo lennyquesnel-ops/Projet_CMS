@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 #[UniqueEntity(fields: ['slug'], message: 'Ce slug existe déjà.')]
@@ -18,6 +20,11 @@ class Page
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: 'Le slug est obligatoire.')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le slug ne peut pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $slug = null;
 
     #[ORM\OneToMany(targetEntity: ElementMenu::class, mappedBy: 'page')]
@@ -29,12 +36,53 @@ class Page
      */
     #[ORM\OneToMany(mappedBy: 'page', targetEntity: PageBloc::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['ordre' => 'ASC'])]
+    #[Assert\Valid]
     private Collection $pageBlocs;
+
+    /**
+     * @var Collection<int, ProfilAcces>
+     */
+    #[ORM\ManyToMany(targetEntity: ProfilAcces::class, mappedBy: 'pages')]
+    private Collection $profilsAcces;
 
     public function __construct()
     {
         $this->elementMenu = new ArrayCollection();
         $this->pageBlocs = new ArrayCollection();
+        $this->profilsAcces = new ArrayCollection();
+    }
+
+    #[Assert\Callback]
+    public function validateNomsBlocsUniques(ExecutionContextInterface $context): void
+    {
+        $nomsDejaUtilises = [];
+
+        foreach ($this->pageBlocs as $pageBloc) {
+            $bloc = $pageBloc->getBloc();
+
+            if ($bloc === null) {
+                continue;
+            }
+
+            $nomBloc = $bloc->getLibelle();
+
+            if ($nomBloc === null || trim($nomBloc) === '') {
+                continue;
+            }
+
+            $nomNormalise = mb_strtolower(trim($nomBloc));
+
+            if (in_array($nomNormalise, $nomsDejaUtilises, true)) {
+                $context->buildViolation('Cette page contient déjà un bloc d’ancrage nommé "{{ nom }}". Chaque bloc d’une même page doit avoir un nom différent.')
+                    ->setParameter('{{ nom }}', $nomBloc)
+                    ->atPath('pageBlocs')
+                    ->addViolation();
+
+                return;
+            }
+
+            $nomsDejaUtilises[] = $nomNormalise;
+        }
     }
 
     public function getId(): ?int
@@ -47,7 +95,7 @@ class Page
         return $this->slug;
     }
 
-    public function setSlug(string $slug): static
+    public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
 
@@ -152,5 +200,32 @@ class Page
     public function __toString(): string
     {
         return $this->getSlug() ?: 'Page sans slug';
+    }
+
+    /**
+     * @return Collection<int, ProfilAcces>
+     */
+    public function getProfilsAcces(): Collection
+    {
+        return $this->profilsAcces;
+    }
+
+    public function addProfilAcces(ProfilAcces $profilAcces): static
+    {
+        if (!$this->profilsAcces->contains($profilAcces)) {
+            $this->profilsAcces->add($profilAcces);
+            $profilAcces->addPage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProfilAcces(ProfilAcces $profilAcces): static
+    {
+        if ($this->profilsAcces->removeElement($profilAcces)) {
+            $profilAcces->removePage($this);
+        }
+
+        return $this;
     }
 }

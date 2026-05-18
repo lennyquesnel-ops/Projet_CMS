@@ -1,7 +1,12 @@
 parameters:
     app.uploads.blocs_dir: '%kernel.project_dir%/public/uploads/blocs'
     app.uploads.blocs_path: 'uploads/blocs'
-
+    app.uploads.styles_dir: '%kernel.project_dir%/public/uploads/styles'
+    app.uploads.styles_path: 'uploads/styles'
+    app.contact_recipient_email: '%env(CONTACT_RECIPIENT_EMAIL)%'
+    app.mail_sender_email: '%env(MAIL_SENDER_EMAIL)%'
+    app.turnstile_site_key: '%env(TURNSTILE_SITE_KEY)%'
+    app.turnstile_secret_key: '%env(TURNSTILE_SECRET_KEY)%'
 services:
     _defaults:
         autowire: true
@@ -19,7 +24,14 @@ services:
         arguments:
             $blocsUploadDir: '%app.uploads.blocs_dir%'
             $blocsUploadPath: '%app.uploads.blocs_path%'
-
-    App\Controller\Admin\ParametreCrudController:
+            
+    App\Service\TurnstileCaptchaVerifier:
         arguments:
-            $blocsUploadPath: '%app.uploads.blocs_path%'
+            $turnstileSecretKey: '%app.turnstile_secret_key%'
+
+    App\Controller\ContactController:
+        arguments:
+            $contactRecipientEmail: '%app.contact_recipient_email%'
+            $mailSenderEmail: '%app.mail_sender_email%'
+            $turnstileSiteKey: '%app.turnstile_site_key%'
+    

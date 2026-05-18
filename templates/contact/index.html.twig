@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact - ATAIS Informatique{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endblock %}
+
+{% block body %}
+	<section class="section border-0 m-0 py-5 bg-light">
+		<div class="container py-4">
+			<div class="row justify-content-center mb-5">
+				<div class="col-lg-8 text-center">
+					<p class="text-color-primary font-weight-bold text-2 text-uppercase mb-2">
+						Contact
+					</p>
+
+					<h1 class="font-weight-bold text-color-dark text-10 mb-3">
+						Parlons de votre projet
+					</h1>
+
+					<p class="text-4 line-height-8 mb-0">
+						Une question, un projet ou une demande d’information ?
+						Envoyez-nous un message, nous vous répondrons dans les meilleurs délais.
+					</p>
+				</div>
+			</div>
+
+			{% for message in app.flashes('success') %}
+				<div class="alert alert-success border-0 border-radius-2 mb-4">
+					{{ message }}
+				</div>
+			{% endfor %}
+
+			{% for message in app.flashes('danger') %}
+				<div class="alert alert-danger border-0 border-radius-2 mb-4">
+					{{ message }}
+				</div>
+			{% endfor %}
+
+			<div class="row">
+				<div class="col-lg-5 mb-4 mb-lg-0">
+					<div class="card border-0 border-radius-2 box-shadow-1 h-100">
+						<div class="card-body p-5">
+							<h2 class="font-weight-bold text-color-dark text-6 mb-3">
+								ATAIS Informatique
+							</h2>
+
+							<p class="text-3 line-height-7 mb-4">
+								ATAIS Informatique accompagne les professionnels dans la conception
+								de logiciels, sites internet, applications et solutions numériques sur mesure.
+							</p>
+
+							<div class="mb-4">
+								<p class="font-weight-bold text-color-dark mb-1">
+									Services
+								</p>
+								<p class="mb-0">
+									Développement web, logiciels de gestion, conseil, formation et matériel informatique.
+								</p>
+							</div>
+
+							<div class="mb-4">
+								<p class="font-weight-bold text-color-dark mb-1">
+									Zone d’intervention
+								</p>
+								<p class="mb-0">
+									Accompagnement local et projets possibles à distance.
+								</p>
+							</div>
+
+							<a href="#formulaire-contact" class="btn btn-primary btn-modern btn-rounded">
+								Envoyer un message
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-7" id="formulaire-contact">
+					<div class="card border-0 border-radius-2 box-shadow-1">
+						<div class="card-body p-5">
+							{{ form_start(form, {
+								attr: {
+									novalidate: 'novalidate',
+									'data-turbo': 'false'
+								}
+							}) }}
+
+							{{ form_errors(form) }}
+
+							<div class="row">
+								<div class="col-md-6 mb-4">
+									{{ form_label(form.nom, null, {
+										label_attr: {
+											class: 'form-label font-weight-bold text-color-dark'
+										}
+									}) }}
+									{{ form_widget(form.nom) }}
+									{{ form_errors(form.nom) }}
+								</div>
+
+								<div class="col-md-6 mb-4">
+									{{ form_label(form.prenom, null, {
+										label_attr: {
+											class: 'form-label font-weight-bold text-color-dark'
+										}
+									}) }}
+									{{ form_widget(form.prenom) }}
+									{{ form_errors(form.prenom) }}
+								</div>
+							</div>
+
+							<div class="mb-4">
+								{{ form_label(form.email, null, {
+									label_attr: {
+										class: 'form-label font-weight-bold text-color-dark'
+									}
+								}) }}
+								{{ form_widget(form.email) }}
+								{{ form_errors(form.email) }}
+							</div>
+
+							<div class="mb-4">
+								{{ form_label(form.objet, null, {
+									label_attr: {
+										class: 'form-label font-weight-bold text-color-dark'
+									}
+								}) }}
+								{{ form_widget(form.objet) }}
+								{{ form_errors(form.objet) }}
+							</div>
+
+							<div class="mb-4">
+								{{ form_label(form.message, null, {
+									label_attr: {
+										class: 'form-label font-weight-bold text-color-dark'
+									}
+								}) }}
+								{{ form_widget(form.message) }}
+								{{ form_errors(form.message) }}
+							</div>
+
+							<div class="mb-4">
+								<div
+									class="cf-turnstile"
+									data-sitekey="{{ turnstile_site_key }}"
+									data-theme="light"
+									data-size="normal"
+									data-appearance="always"
+									data-refresh-expired="auto"
+								></div>
+							</div>
+
+							<div class="text-end">
+								{{ form_widget(form.envoyer) }}
+							</div>
+
+							{{ form_end(form) }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

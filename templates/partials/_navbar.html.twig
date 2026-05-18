@@ -1,73 +1,132 @@
-<nav class="site-navbar">
-    <div class="site-navbar__inner">
-        <a href="{{ path('app_home') }}" class="site-navbar__brand">
-            {% if siteParametre is defined and siteParametre and siteParametre.logoSite %}
-                <img
-                    src="{{ asset(blocs_upload_path ~ '/' ~ siteParametre.logoSite) }}"
-                    alt="Logo du site"
-                    class="site-navbar__logo"
-                >
-            {% else %}
-                ATAIS Informatique
-            {% endif %}
-        </a>
+<header id="header" class="header-effect-shrink">
+	<div class="header-body border-top-0 box-shadow-none">
+		<div class="header-container container py-2">
+			<div class="header-row">
+				<div class="header-column">
+					<div class="header-row">
+						<div class="header-logo">
+							<a href="{{ path('app_home') }}">
+								{% if logoSite is defined and logoSite %}
+									{% set logoPath = logoSite starts with 'uploads/' ? logoSite : blocs_upload_path ~ '/' ~ logoSite %}
 
-        <ul class="site-navbar__menu">
-            {% set currentRoute = app.request.attributes.get('_route') %}
-            {% set currentSlug = app.request.attributes.get('slug') %}
+									<img
+										src="{{ asset(logoPath) }}"
+										alt="ATAIS Informatique"
+										width="160"
+										height="60"
+										style="max-height: 58px; width: auto;"
+									>
+								{% else %}
+									<span class="font-weight-bold text-color-dark text-5">
+										ATAIS Informatique
+									</span>
+								{% endif %}
+							</a>
+						</div>
+					</div>
+				</div>
 
-            {% for menu in menus %}
-                {% set elementsVisibles = menu.elementMenu|filter(element => element.estVisible) %}
-                {% set menuActif = false %}
+				<div class="header-column justify-content-end">
+					<div class="header-row">
+						<div class="header-nav header-nav-links order-2 order-lg-1">
+							<div
+								class="header-nav-main header-nav-main-square header-nav-main-effect-2 header-nav-main-sub-effect-1"
+								data-controller="porto-nav"
+							>
+								<nav class="collapse" id="mainNav">
+									<ul class="nav nav-pills" id="mainNavList">
+										{% set currentRoute = app.request.attributes.get('_route') %}
+										{% set currentSlug = app.request.attributes.get('slug') %}
 
-                {% for element in elementsVisibles %}
-                    {% set targetPage = element.page %}
+										{% for menu in menus %}
+											{% set elementsVisibles = menu.elementMenu|filter(element => element.estVisible) %}
+											{% set menuActif = false %}
 
-                    {% if targetPage and currentRoute == 'app_page_show' and targetPage.slug == currentSlug %}
-                        {% set menuActif = true %}
-                    {% endif %}
-                {% endfor %}
+											{% for element in elementsVisibles %}
+												{% set targetPage = element.page %}
 
-                <li class="site-navbar__item {{ elementsVisibles|length > 0 ? 'has-dropdown' : '' }} {{ menuActif ? 'is-active' : '' }}">
-                    <span class="site-navbar__link">
-                        {{ menu.libelle }}
-                    </span>
+												{% if targetPage and currentRoute == 'app_page_show' and targetPage.slug == currentSlug %}
+													{% set menuActif = true %}
+												{% endif %}
+											{% endfor %}
 
-                    {% if elementsVisibles|length > 0 %}
-                        <ul class="site-navbar__dropdown">
-                            {% for element in elementsVisibles %}
-                                {% set targetPage = element.page %}
-                                {% set targetAnchor = element.bloc ? 'bloc-' ~ element.bloc.id : null %}
+											<li class="{{ elementsVisibles|length > 0 ? 'dropdown' : '' }} {{ menuActif ? 'active' : '' }}">
+												{% if elementsVisibles|length > 0 %}
+													<a
+														href="#"
+														class="dropdown-item dropdown-toggle {{ menuActif ? 'active' : '' }}"
+														data-action="click->porto-nav#toggle"
+													>
+														{{ menu.libelle }}
+													</a>
 
-                                {% set targetHref = null %}
+													<ul class="dropdown-menu">
+														{% for element in elementsVisibles %}
+															{% set targetPage = element.page %}
+															{% set targetAnchor = element.bloc ? 'bloc-' ~ element.bloc.id : null %}
+															{% set targetHref = null %}
 
-                                {% if targetPage %}
-                                    {% set targetHref = path('app_page_show', { slug: targetPage.slug }) %}
+															{% if targetPage %}
+																{% set targetHref = path('app_page_show', { slug: targetPage.slug }) %}
 
-                                    {% if targetAnchor %}
-                                        {% set targetHref = targetHref ~ '#' ~ targetAnchor %}
-                                    {% endif %}
-                                {% endif %}
+																{% if targetAnchor %}
+																	{% set targetHref = targetHref ~ '#' ~ targetAnchor %}
+																{% endif %}
+															{% endif %}
 
-                                {% set elementActif = targetPage and currentRoute == 'app_page_show' and targetPage.slug == currentSlug %}
+															{% set elementActif = targetPage and currentRoute == 'app_page_show' and targetPage.slug == currentSlug %}
 
-                                <li class="site-navbar__dropdown-item">
-                                    {% if targetHref %}
-                                        <a href="{{ targetHref }}"
-                                           class="site-navbar__dropdown-link {{ elementActif ? 'is-active' : '' }}">
-                                            {{ element.libelle }}
-                                        </a>
-                                    {% else %}
-                                        <span class="site-navbar__dropdown-link is-disabled">
-                                            {{ element.libelle }}
-                                        </span>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-</nav>
+															<li>
+																{% if targetHref %}
+																	<a
+																		href="{{ targetHref }}"
+																		class="dropdown-item {{ elementActif ? 'active' : '' }}"
+																	>
+																		{{ element.libelle }}
+																	</a>
+																{% else %}
+																	<span class="dropdown-item text-muted">
+																		{{ element.libelle }}
+																	</span>
+																{% endif %}
+															</li>
+														{% endfor %}
+													</ul>
+												{% else %}
+													<span class="dropdown-item text-muted">
+														{{ menu.libelle }}
+													</span>
+												{% endif %}
+											</li>
+										{% endfor %}
+
+										<li class="{{ currentRoute == 'app_contact' ? 'active' : '' }}">
+											<a
+												href="{{ path('app_contact') }}"
+												class="dropdown-item {{ currentRoute == 'app_contact' ? 'active' : '' }}"
+											>
+												Contact
+											</a>
+										</li>
+									</ul>
+								</nav>
+							</div>
+
+							<button
+								class="btn header-btn-collapse-nav"
+								type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#mainNav"
+								aria-controls="mainNav"
+								aria-expanded="false"
+								aria-label="Ouvrir le menu"
+							>
+								☰
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>

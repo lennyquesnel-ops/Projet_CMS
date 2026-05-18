@@ -1,0 +1,29 @@
+{% block parametre_valeur_widget %}
+    <div class="parametre-valeur-field">
+        {{ block('textarea_widget') }}
+
+        {% if media_browser_url %}
+            <div class="mt-2 d-flex gap-2 align-items-center flex-wrap">
+                <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    onclick="ouvrirMediathequeParametre('{{ id|e('js') }}', '{{ media_browser_url|e('js') }}')"
+                >
+                    Choisir une image dans la médiathèque
+                </button>
+
+                <small class="text-muted">
+                    Pour le logo, mets le code <strong>logo_site</strong>.
+                    Le bouton remplira automatiquement la valeur avec le nom du fichier.
+                </small>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function ouvrirMediathequeParametre(champId, mediaBrowserUrl) {
+            const url = mediaBrowserUrl + '?target=' + encodeURIComponent(champId);
+            window.open(url, 'mediaBrowser', 'width=1000,height=700,scrollbars=yes,resizable=yes');
+        }
+    </script>
+{% endblock %}

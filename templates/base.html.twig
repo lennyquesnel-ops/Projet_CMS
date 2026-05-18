@@ -1,40 +1,57 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        {% set siteParametre = get_site_parametre() %}
+	<head>
+		{% set siteUrl = get_parametre_value(constant('App\\Entity\\Parametre::CODE_SITE_URL')) %}
+		{% set logoSite = get_parametre_value(constant('App\\Entity\\Parametre::CODE_LOGO_SITE')) %}
+		{% set themeCss = get_parametre_value(constant('App\\Entity\\Parametre::CODE_THEME_CSS')) %}
+		{% set customCss = get_parametre_value(constant('App\\Entity\\Parametre::CODE_CUSTOM_CSS')) %}
 
-        <meta charset="UTF-8">
-        <title>{% block title %}ATAIS Informatique{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        {% if siteParametre and siteParametre.url %}
-            <link rel="canonical" href="{{ siteParametre.url ~ app.request.pathInfo }}">
-        {% endif %}
+		<title>{% block title %}ATAIS Informatique{% endblock %}</title>
 
-       {% block stylesheets %}
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-            <link rel="stylesheet" href="{{ asset('css/site.css') }}">
-        {% endblock %}
+		{% if siteUrl %}
+			<link rel="canonical" href="{{ siteUrl ~ app.request.pathInfo }}">
+		{% endif %}
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+		{% block stylesheets %}
+			<link rel="preconnect" href="https://fonts.googleapis.com">
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+			<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-        {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-        {% if frankenphpHotReload %}
-            <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
-            <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-            <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
-    </head>
-    <body>
-        {% include 'partials/_navbar.html.twig' with {
-            menus: get_menus(),
-            siteParametre: siteParametre
-        } %}
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
-        <main class="site-main">
-            {% block body %}{% endblock %}
-        </main>
-    </body>
+			{# CSS fixe du projet #}
+			<link rel="stylesheet" href="{{ asset('css/site.css') }}">
+
+			{# CSS du thème uploadé depuis l’admin #}
+			{% if themeCss %}
+				<link rel="stylesheet" href="{{ asset('uploads/styles/' ~ themeCss) }}">
+			{% endif %}
+
+			{# CSS personnalisé optionnel, chargé après le thème pour surcharger #}
+			{% if customCss %}
+				<link rel="stylesheet" href="{{ asset('uploads/styles/' ~ customCss) }}">
+			{% endif %}
+		{% endblock %}
+
+		{% block javascripts %}
+			{% block importmap %}{{ importmap('app') }}{% endblock %}
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+		{% endblock %}
+	</head>
+
+	<body>
+		<div class="body">
+			{% include 'partials/_navbar.html.twig' with {
+				menus: get_menus(),
+				logoSite: logoSite
+			} %}
+
+			<div role="main" class="main">
+				{% block body %}{% endblock %}
+			</div>
+		</div>
+	</body>
 </html>
