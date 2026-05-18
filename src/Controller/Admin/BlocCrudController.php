@@ -56,7 +56,8 @@ class BlocCrudController extends AbstractCrudController
             ->setColumns(6);
 
         yield TextField::new('resumePages', 'Pages où ce bloc est utilisé')
-            ->onlyOnIndex();
+            ->onlyOnIndex()
+            ->setTemplatePath('admin/field/bloc_pages_links.html.twig');
 
         yield BooleanField::new('est_visible', 'Visible')
             ->renderAsSwitch(false)

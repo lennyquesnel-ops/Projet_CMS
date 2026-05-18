@@ -1,0 +1,22 @@
+{% set elementMenu = entity.instance %}
+{% set page = elementMenu.page %}
+
+{% if page %}
+    {% set pageLibelle = page.slug is not empty ? page.slug : 'Page #' ~ page.id %}
+
+    <div class="admin-link-list admin-link-list--single">
+        <a
+            href="{{ ea_url()
+                .setController('App\\Controller\\Admin\\PageCrudController')
+                .setAction('edit')
+                .setEntityId(page.id)
+            }}"
+            class="admin-related-link admin-related-link--page"
+            title="Modifier cette page"
+        >
+            <span class="admin-related-link__label">{{ pageLibelle }}</span>
+        </a>
+    </div>
+{% else %}
+    <span class="admin-empty-value">Aucune page</span>
+{% endif %}

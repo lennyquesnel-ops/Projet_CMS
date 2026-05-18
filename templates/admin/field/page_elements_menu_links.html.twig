@@ -1,0 +1,23 @@
+{% set page = entity.instance %}
+
+<div class="admin-link-list">
+    {% for elementMenu in page.elementMenu %}
+        {% set menu = elementMenu.menu %}
+        {% set menuLibelle = menu ? menu.libelle : 'Menu inconnu' %}
+        {% set elementLibelle = elementMenu.libelle is not empty ? elementMenu.libelle : 'Élément #' ~ elementMenu.id %}
+
+        <a
+            href="{{ ea_url()
+                .setController('App\\Controller\\Admin\\ElementMenuCrudController')
+                .setAction('edit')
+                .setEntityId(elementMenu.id)
+            }}"
+            class="admin-related-link admin-related-link--menu"
+            title="Modifier cet élément de menu"
+        >
+            <span class="admin-related-link__label">{{ menuLibelle }} &gt; {{ elementLibelle }}</span>
+        </a>
+    {% else %}
+        <span class="admin-empty-value">Aucun élément de menu</span>
+    {% endfor %}
+</div>

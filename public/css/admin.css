@@ -263,3 +263,83 @@ body.login-page-atais .wrapper {
     color: #6c757d !important;
     font-size: 0.85rem !important;
 }
+
+/* ===== EASYADMIN : liens entre entités ===== */
+
+.admin-link-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    min-width: 320px;
+    max-width: 780px;
+    white-space: normal;
+}
+
+.admin-related-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    max-width: 100%;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--gris-bordure);
+    border-radius: 999px;
+    background: var(--gris-atais-light);
+    color: var(--texte);
+    font-size: 0.85rem;
+    line-height: 1.2;
+    text-decoration: none;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.admin-related-link:hover,
+.admin-related-link:focus {
+    background: var(--vert-atais);
+    border-color: var(--vert-atais-dark);
+    color: var(--gris-atais-dark);
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(91, 96, 95, 0.15);
+}
+
+.admin-related-link__order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.3rem;
+    border-radius: 999px;
+    background: var(--blanc);
+    color: var(--gris-atais-dark);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.admin-related-link__label {
+    white-space: normal;
+    word-break: break-word;
+}
+
+.admin-empty-value {
+    color: var(--texte-clair);
+    font-style: italic;
+}
+
+.admin-link-list--single {
+    min-width: auto;
+    max-width: 240px;
+}
+
+.admin-related-link--bloc {
+    background: #e9ecef;
+}
+
+.admin-related-link--bloc:hover,
+.admin-related-link--bloc:focus {
+    background: var(--vert-atais);
+}

@@ -105,6 +105,21 @@ class Menu
         return $this;
     }
 
+    public function getResumeElementsMenu(): string
+        {
+            $labels = [];
+
+            foreach ($this->getElementMenu() as $elementMenu) {
+                $labels[] = sprintf(
+                    '%d - %s',
+                    $elementMenu->getOrdre(),
+                    $elementMenu->getLibelle() ?: sprintf('Élément #%d', $elementMenu->getId())
+                );
+            }
+
+            return $labels !== [] ? implode(', ', $labels) : '—';
+        }
+
     public function __toString(): string
     {
         return $this->libelle ?? 'Nouveau menu';

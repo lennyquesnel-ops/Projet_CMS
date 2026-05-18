@@ -36,29 +36,63 @@ class ElementMenuCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Élément de menu')
             ->setEntityLabelInPlural('Éléments de menu')
-            ->setDefaultSort(['ordre' => 'ASC']);
+            ->setDefaultSort(['ordre' => 'ASC'])
+            ->setSearchFields([
+                'libelle',
+                'menu.libelle',
+                'page.slug',
+                'bloc.libelle',
+            ])
+            ->setPageTitle(Crud::PAGE_INDEX, 'Éléments de menu')
+            ->setPageTitle(Crud::PAGE_NEW, 'Créer un élément de menu')
+            ->setPageTitle(Crud::PAGE_EDIT, 'Modifier l’élément de menu');
     }
 
     public function configureFields(string $pageName): iterable
     {
-        return [
-            IdField::new('id')->hideOnForm(),
+        yield IdField::new('id')
+            ->hideOnForm();
 
-            TextField::new('libelle', 'Libellé'),
+        yield TextField::new('libelle', 'Libellé')
+            ->setColumns(6);
 
-            IntegerField::new('ordre', 'Ordre'),
+        yield IntegerField::new('ordre', 'Ordre')
+            ->setColumns(3);
 
-            BooleanField::new('est_visible', 'Visible'),
+        yield BooleanField::new('est_visible', 'Visible')
+            ->renderAsSwitch(false)
+            ->setColumns(3);
 
-            AssociationField::new('menu', 'Menu parent')
-                ->setFormTypeOption('choice_label', 'libelle'),
+        yield AssociationField::new('menu', 'Menu parent')
+            ->onlyOnIndex()
+            ->setTemplatePath('admin/field/element_menu_menu_link.html.twig');
 
-            AssociationField::new('page', 'Page liée')
-                ->setFormTypeOption('choice_label', 'slug'),
+        yield AssociationField::new('menu', 'Menu parent')
+            ->onlyOnForms()
+            ->autocomplete()
+            ->setFormTypeOption('choice_label', 'libelle')
+            ->setColumns(6);
 
-            AssociationField::new('bloc', 'Bloc d’ancrage'),
+        yield AssociationField::new('page', 'Page liée')
+            ->onlyOnIndex()
+            ->setTemplatePath('admin/field/element_menu_page_link.html.twig');
 
-        ];
+        yield AssociationField::new('page', 'Page liée')
+            ->onlyOnForms()
+            ->autocomplete()
+            ->setFormTypeOption('choice_label', 'slug')
+            ->setHelp('Page vers laquelle cet élément de menu doit envoyer.')
+            ->setColumns(6);
+
+        yield AssociationField::new('bloc', 'Bloc d’ancrage')
+            ->onlyOnIndex()
+            ->setTemplatePath('admin/field/element_menu_bloc_link.html.twig');
+
+        yield AssociationField::new('bloc', 'Bloc d’ancrage')
+            ->onlyOnForms()
+            ->autocomplete()
+            ->setHelp('Optionnel : permet d’envoyer directement vers une section précise de la page.')
+            ->setColumns(6);
     }
 
     public function createIndexQueryBuilder(

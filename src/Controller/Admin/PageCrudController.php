@@ -50,10 +50,12 @@ class PageCrudController extends AbstractCrudController
             ->setColumns(6);
 
         yield TextField::new('resumeBlocs', 'Blocs affichés')
-            ->onlyOnIndex();
+            ->onlyOnIndex()
+            ->setTemplatePath('admin/field/page_blocs_links.html.twig');
 
         yield TextField::new('resumeElementsMenu', 'Éléments de menu')
-            ->onlyOnIndex();
+            ->onlyOnIndex()
+            ->setTemplatePath('admin/field/page_elements_menu_links.html.twig');
 
         yield CollectionField::new('pageBlocs', 'Blocs affichés sur cette page')
             ->useEntryCrudForm(PageBlocCrudController::class)

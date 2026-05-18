@@ -1,0 +1,22 @@
+{% set elementMenu = entity.instance %}
+{% set bloc = elementMenu.bloc %}
+
+{% if bloc %}
+    {% set blocLibelle = bloc.libelle is not empty ? bloc.libelle : 'Bloc #' ~ bloc.id %}
+
+    <div class="admin-link-list admin-link-list--single">
+        <a
+            href="{{ ea_url()
+                .setController('App\\Controller\\Admin\\BlocCrudController')
+                .setAction('edit')
+                .setEntityId(bloc.id)
+            }}"
+            class="admin-related-link admin-related-link--bloc"
+            title="Modifier ce bloc"
+        >
+            <span class="admin-related-link__label">{{ blocLibelle }}</span>
+        </a>
+    </div>
+{% else %}
+    <span class="admin-empty-value">Aucun bloc</span>
+{% endif %}

@@ -1,0 +1,26 @@
+{% set page = entity.instance %}
+
+<div class="admin-link-list">
+    {% for pageBloc in page.pageBlocs %}
+        {% set bloc = pageBloc.bloc %}
+
+        {% if bloc %}
+            {% set libelle = bloc.libelle is not empty ? bloc.libelle : 'Bloc #' ~ bloc.id %}
+
+            <a
+                href="{{ ea_url()
+                    .setController('App\\Controller\\Admin\\BlocCrudController')
+                    .setAction('edit')
+                    .setEntityId(bloc.id)
+                }}"
+                class="admin-related-link admin-related-link--bloc"
+                title="Modifier ce bloc"
+            >
+                <span class="admin-related-link__order">{{ pageBloc.ordre }}</span>
+                <span class="admin-related-link__label">{{ libelle }}</span>
+            </a>
+        {% endif %}
+    {% else %}
+        <span class="admin-empty-value">Aucun bloc</span>
+    {% endfor %}
+</div>
