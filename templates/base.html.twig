@@ -10,6 +10,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<title>{% block title %}ATAIS Informatique{% endblock %}</title>
+		<link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+		<link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
 		{% if siteUrl %}
 			<link rel="canonical" href="{{ siteUrl ~ app.request.pathInfo }}">
