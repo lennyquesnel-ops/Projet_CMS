@@ -55,6 +55,11 @@ class PageCrudController extends StayOnEditCrudController
             ->setHelp('Exemple : accueil, services, contact. Le slug sert dans l’URL.')
             ->setColumns(6);
 
+        yield TextField::new('cacheDirectory', 'Dossier de cache')
+            ->setRequired(true)
+            ->setHelp('Exemple : pages/accueil ou pages/realisations. Le fichier sera généré dans var/page_cache/[dossier]/index.html.')
+            ->setColumns(6);
+
         yield TextField::new('resumeBlocs', 'Blocs affichés')
             ->onlyOnIndex()
             ->setTemplatePath('admin/field/page_blocs_links.html.twig');

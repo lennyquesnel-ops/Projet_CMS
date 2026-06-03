@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Repository\PageRepository;
 use App\Service\StaticPageGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -11,11 +12,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:static:generate',
-    description: 'Génère les pages publiques en fichiers HTML statiques.'
+    description: 'Génère les pages publiques en fichiers HTML de cache.'
 )]
 class GenerateStaticPagesCommand extends Command
 {
     public function __construct(
+        private readonly PageRepository $pageRepository,
         private readonly StaticPageGenerator $staticPageGenerator,
     ) {
         parent::__construct();
@@ -25,12 +27,13 @@ class GenerateStaticPagesCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->title('Génération du cache statique');
+        $io->title('Génération du cache des pages');
 
-        $generatedFiles = $this->staticPageGenerator->generateAll();
+        $pages = $this->pageRepository->findAllWithBlocs();
+        $generatedFiles = $this->staticPageGenerator->generateAll($pages);
 
         if ($generatedFiles === []) {
-            $io->warning('Aucune page statique n’a été générée. Vérifie qu’il existe au moins une page en base de données.');
+            $io->warning('Aucune page n’a été générée. Vérifie qu’il existe au moins une page en base de données.');
 
             return Command::SUCCESS;
         }

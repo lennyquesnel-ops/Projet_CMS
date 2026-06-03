@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\PageRepository;
+use App\Service\StaticPageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,16 +27,33 @@ class PageController extends AbstractController
     #[Route('/page/{slug}', name: 'app_page_show')]
     public function show(
         string $slug,
-        PageRepository $pageRepository
+        PageRepository $pageRepository,
+        StaticPageGenerator $staticPageGenerator
     ): Response {
-        $page = $pageRepository->findOneBySlugWithBlocs($slug);
+        $page = $pageRepository->findOneBy([
+            'slug' => $slug,
+        ]);
 
         if (!$page) {
             throw $this->createNotFoundException('Page introuvable');
         }
 
-        return $this->render('page/show.html.twig', [
-            'page' => $page,
+        if ($staticPageGenerator->hasCache($page)) {
+            return new Response($staticPageGenerator->readCache($page), Response::HTTP_OK, [
+                'Content-Type' => 'text/html; charset=UTF-8',
+                'X-ATAIS-Cache' => 'HIT',
+            ]);
+        }
+
+        $pageWithBlocs = $pageRepository->findOneBySlugWithBlocs($slug);
+
+        if (!$pageWithBlocs) {
+            throw $this->createNotFoundException('Page introuvable');
+        }
+
+        return new Response($staticPageGenerator->generate($pageWithBlocs, '/page/' . trim($slug, '/')), Response::HTTP_OK, [
+            'Content-Type' => 'text/html; charset=UTF-8',
+            'X-ATAIS-Cache' => 'MISS',
         ]);
     }
 }

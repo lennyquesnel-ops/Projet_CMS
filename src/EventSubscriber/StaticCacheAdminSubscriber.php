@@ -9,6 +9,7 @@ use App\Entity\Menu;
 use App\Entity\Page;
 use App\Entity\PageBloc;
 use App\Entity\Parametre;
+use App\Repository\PageRepository;
 use App\Service\StaticPageGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityDeletedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterEntityPersistedEvent;
@@ -32,6 +33,7 @@ class StaticCacheAdminSubscriber implements EventSubscriberInterface
     ];
 
     public function __construct(
+        private readonly PageRepository $pageRepository,
         private readonly StaticPageGenerator $staticPageGenerator,
         private readonly LoggerInterface $logger,
     ) {
@@ -59,9 +61,11 @@ class StaticCacheAdminSubscriber implements EventSubscriberInterface
         }
 
         try {
-            $this->staticPageGenerator->generateAll();
+            $pages = $this->pageRepository->findAllWithBlocs();
+
+            $this->staticPageGenerator->generateAll($pages);
         } catch (\Throwable $exception) {
-            $this->logger->error('Erreur pendant la génération du cache statique.', [
+            $this->logger->error('Erreur pendant la génération du cache des pages.', [
                 'exception' => $exception,
                 'entity' => $entity::class,
             ]);

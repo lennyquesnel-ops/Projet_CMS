@@ -27,7 +27,8 @@ class ContactCrudController extends StayOnEditCrudController
             ->setPageTitle(Crud::PAGE_INDEX, 'Messages de contact')
             ->setPageTitle(Crud::PAGE_DETAIL, 'Détail du message')
             ->setDefaultSort(['date' => 'DESC', 'id' => 'DESC'])
-            ->setEntityPermission('ROLE_ADMIN');
+            ->setEntityPermission('ROLE_ADMIN')
+            ->showEntityActionsInlined();
     }
 
     public function configureFields(string $pageName): iterable
@@ -52,8 +53,8 @@ class ContactCrudController extends StayOnEditCrudController
             ->setColumns(6);
 
         yield TextareaField::new('message', 'Message')
-            ->setRequired(true)
             ->hideOnIndex()
+            ->setRequired(true)
             ->setColumns(12);
 
         yield DateField::new('date', 'Date')
@@ -64,12 +65,25 @@ class ContactCrudController extends StayOnEditCrudController
     {
         return $actions
             ->disable(Action::NEW, Action::EDIT)
+
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+
+            ->update(
+                Crud::PAGE_INDEX,
+                Action::DETAIL,
+                fn (Action $action) => $action
+                    ->setLabel('Voir')
+                    ->setIcon('fa fa-eye')
+                    ->setHtmlAttributes(['title' => 'Voir le message'])
+            )
+
             ->update(
                 Crud::PAGE_INDEX,
                 Action::DELETE,
                 fn (Action $action) => $action
                     ->setLabel('Supprimer')
-                    ->displayIf(fn (?Contact $contact): bool => $contact !== null && $contact->getId() !== null)
+                    ->setIcon('fa fa-trash')
+                    ->setHtmlAttributes(['title' => 'Supprimer le message'])
             );
     }
 }

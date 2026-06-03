@@ -33,12 +33,16 @@ class BlocVoter extends Voter
             return false;
         }
 
+        /** @var Bloc $bloc */
+        $bloc = $subject;
+
+        if ($attribute === self::DELETE && $bloc->isUsedInPage()) {
+            return false;
+        }
+
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
-
-        /** @var Bloc $bloc */
-        $bloc = $subject;
 
         return $this->userCanManageBloc($user, $bloc);
     }

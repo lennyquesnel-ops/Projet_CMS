@@ -18,7 +18,7 @@ class Bloc
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message: 'Le libelle est obligatoire.')]
+    #[Assert\NotBlank(message: 'Le libellé est obligatoire.')]
     private ?string $libelle = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -38,34 +38,6 @@ class Bloc
      */
     #[ORM\OneToMany(mappedBy: 'bloc', targetEntity: PageBloc::class, orphanRemoval: true)]
     private Collection $pageBlocs;
-
-    private ?Page $pageRattachement = null;
-
-    private ?int $ordreRattachement = 1;
-
-    public function getPageRattachement(): ?Page
-    {
-        return $this->pageRattachement;
-    }
-
-    public function setPageRattachement(?Page $pageRattachement): static
-    {
-        $this->pageRattachement = $pageRattachement;
-
-        return $this;
-    }
-
-    public function getOrdreRattachement(): ?int
-    {
-        return $this->ordreRattachement;
-    }
-
-    public function setOrdreRattachement(?int $ordreRattachement): static
-    {
-        $this->ordreRattachement = $ordreRattachement;
-
-        return $this;
-    }
 
     public function __construct()
     {
@@ -177,6 +149,11 @@ class Bloc
         }
 
         return $this;
+    }
+
+    public function isUsedInPage(): bool
+    {
+        return !$this->pageBlocs->isEmpty();
     }
 
     public function getResumePages(): string

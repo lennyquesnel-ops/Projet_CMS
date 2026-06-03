@@ -97,44 +97,6 @@ body.login-page-atais .btn-primary:hover {
     border-radius: 8px;
 }
 
-.sidebar {
-    width: 100%;
-    max-width: 520px;
-    background: var(--blanc);
-    border-radius: var(--radius-atais);
-    box-shadow: var(--ombre-atais);
-    overflow: hidden;
-    border-top: 6px solid var(--vert-atais);
-    padding-bottom: 25px;
-}
-
-@media (max-width: 991.98px) {
-    .sidebar {
-        max-width: none;
-        width: auto;
-        background: var(--blanc);
-        border-radius: 0;
-        box-shadow: none;
-        border-top: none;
-        padding-bottom: 0;
-        overflow: visible;
-    }
-
-    .main-header {
-        padding: initial !important;
-        margin: initial !important;
-    }
-
-    .logo {
-        width: auto;
-        margin: 0;
-        background: initial;
-        padding: initial;
-        text-align: initial;
-    }
-}
-
-
 
 .action-new, .action-saveAndReturn, .action-saveAndAddAnother{
     background: var(--vert-atais) !important;
@@ -283,8 +245,9 @@ body.login-page-atais .btn-primary:hover {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
-    min-width: 320px;
-    max-width: 780px;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
     white-space: normal;
 }
 
@@ -336,6 +299,7 @@ body.login-page-atais .btn-primary:hover {
 .admin-related-link__label {
     white-space: normal;
     word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .admin-empty-value {

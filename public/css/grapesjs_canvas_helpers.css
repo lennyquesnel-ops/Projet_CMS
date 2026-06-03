@@ -1,0 +1,50 @@
+body {
+    max-width: 1400px;
+    margin: 0 auto;
+    color: #212529;
+    background: #ffffff;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+section,
+header,
+footer,
+main,
+article,
+div {
+    box-sizing: border-box;
+}
+
+section,
+header,
+footer,
+main,
+article {
+    display: block;
+}
+
+a[href] {
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+}
+
+.gjs-dashed section,
+.gjs-dashed header,
+.gjs-dashed footer,
+.gjs-dashed main,
+.gjs-dashed article,
+.gjs-dashed div,
+.gjs-dashed .container,
+.gjs-dashed .container-fluid,
+.gjs-dashed .row,
+.gjs-dashed [class^="col"],
+.gjs-dashed [class*=" col-"] {
+    min-height: 24px;
+}

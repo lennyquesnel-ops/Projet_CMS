@@ -42,6 +42,22 @@ class PageRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @return array<int, Page>
+     */
+    public function findAllWithBlocs(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.pageBlocs', 'pb')
+            ->addSelect('pb')
+            ->leftJoin('pb.bloc', 'b')
+            ->addSelect('b')
+            ->orderBy('p.id', 'ASC')
+            ->addOrderBy('pb.ordre', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findHomepageSlug(): ?string
     {
         $result = $this->createQueryBuilder('p')

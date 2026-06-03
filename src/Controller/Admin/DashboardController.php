@@ -71,6 +71,7 @@ class DashboardController extends AbstractDashboardController
         return Crud::new()
             ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig')
             ->addFormTheme('admin/form/parametre_valeur_widget.html.twig')
+            ->renderContentMaximized()
             ->showEntityActionsInlined();
     }
 
@@ -81,7 +82,7 @@ class DashboardController extends AbstractDashboardController
                 Crud::PAGE_INDEX,
                 Action::EDIT,
                 fn (Action $action) => $action
-                    ->setLabel(false)
+                    ->setLabel('Modifier')
                     ->setIcon('fa fa-pen')
                     ->setHtmlAttributes(['title' => 'Modifier'])
             )
@@ -89,7 +90,7 @@ class DashboardController extends AbstractDashboardController
                 Crud::PAGE_INDEX,
                 Action::DELETE,
                 fn (Action $action) => $action
-                    ->setLabel(false)
+                    ->setLabel('Supprimer')
                     ->setIcon('fa fa-trash')
                     ->setHtmlAttributes(['title' => 'Supprimer'])
             );

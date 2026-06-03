@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
 #[UniqueEntity(fields: ['slug'], message: 'Ce slug existe déjà.')]
+#[UniqueEntity(fields: ['cacheDirectory'], message: 'Ce dossier de cache est déjà utilisé par une autre page.')]
 class Page
 {
     #[ORM\Id]
@@ -26,6 +27,18 @@ class Page
         maxMessage: 'Le slug ne peut pas dépasser {{ limit }} caractères.'
     )]
     private ?string $slug = null;
+
+    #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: 'Le dossier de cache est obligatoire.')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Le dossier de cache ne peut pas dépasser {{ limit }} caractères.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-zA-Z0-9_\-\/]+$/',
+        message: 'Le dossier de cache ne peut contenir que des lettres, chiffres, tirets, underscores et slashs.'
+    )]
+    private ?string $cacheDirectory = null;
 
     #[ORM\OneToMany(targetEntity: ElementMenu::class, mappedBy: 'page')]
     #[ORM\OrderBy(['ordre' => 'ASC'])]
@@ -85,6 +98,26 @@ class Page
         }
     }
 
+    #[Assert\Callback]
+    public function validateCacheDirectory(ExecutionContextInterface $context): void
+    {
+        if ($this->cacheDirectory === null) {
+            return;
+        }
+
+        if (str_contains($this->cacheDirectory, '..')) {
+            $context->buildViolation('Le dossier de cache ne doit pas contenir "..".')
+                ->atPath('cacheDirectory')
+                ->addViolation();
+        }
+
+        if (str_starts_with($this->cacheDirectory, '/') || str_ends_with($this->cacheDirectory, '/')) {
+            $context->buildViolation('Le dossier de cache ne doit pas commencer ou finir par un slash.')
+                ->atPath('cacheDirectory')
+                ->addViolation();
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -99,7 +132,47 @@ class Page
     {
         $this->slug = $slug;
 
+        if (($this->cacheDirectory === null || trim($this->cacheDirectory) === '') && $slug !== null && trim($slug) !== '') {
+            $this->setCacheDirectory($slug);
+        }
+
         return $this;
+    }
+
+    public function getCacheDirectory(): ?string
+    {
+        return $this->cacheDirectory;
+    }
+
+    public function setCacheDirectory(?string $cacheDirectory): static
+    {
+        if ($cacheDirectory === null) {
+            $this->cacheDirectory = null;
+
+            return $this;
+        }
+
+        $cacheDirectory = trim($cacheDirectory);
+        $cacheDirectory = str_replace('\\', '/', $cacheDirectory);
+        $cacheDirectory = preg_replace('#/+#', '/', $cacheDirectory) ?? $cacheDirectory;
+        $cacheDirectory = trim($cacheDirectory, '/');
+
+        $this->cacheDirectory = $cacheDirectory !== '' ? $cacheDirectory : null;
+
+        return $this;
+    }
+
+    public function getEffectiveCacheDirectory(): string
+    {
+        if ($this->cacheDirectory !== null && trim($this->cacheDirectory) !== '') {
+            return trim($this->cacheDirectory, '/');
+        }
+
+        if ($this->slug !== null && trim($this->slug) !== '') {
+            return trim($this->slug, '/');
+        }
+
+        return sprintf('page-%s', $this->id ?? 'new');
     }
 
     /**
